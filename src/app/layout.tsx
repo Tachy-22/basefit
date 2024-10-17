@@ -43,7 +43,7 @@ export default function RootLayout({
           backgroundSize: "cover",
           backgroundPosition: "bottom",
         }}
-        className="flex items-center justify-center "
+        className="flex items-center justify-center scrollbar-hide"
       >
         <NextProviders>
           {" "}
