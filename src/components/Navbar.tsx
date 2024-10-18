@@ -50,6 +50,15 @@ const AppNavbar = () => {
     console.log("Wallet connected!");
   };
 
+  console.log({
+    address,
+    isConnecting,
+    isDisconnected,
+    isReconnecting,
+    isConnected,
+    status,
+  });
+
   return (
     <Navbar isBordered maxWidth="2xl">
       <NavbarContent justify="start">
@@ -102,7 +111,7 @@ const AppNavbar = () => {
             text="Sign in to transact"
           />
         )} */}
-        {!address ? (
+        {address ? (
           <UserAvatar />
         ) : (
           <div className="flex items-center gap-3">

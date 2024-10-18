@@ -6,14 +6,26 @@ import {
   Badge,
   Address,
 } from "@coinbase/onchainkit/identity";
+import { base } from "viem/chains";
+
+import { useAccount } from "wagmi";
 
 import React from "react";
 
 const UserAvatar = () => {
-      
+  const {
+    address,
+    isConnecting,
+    isDisconnected,
+    isReconnecting,
+    isConnected,
+    status,
+  } = useAccount();
+  
   return (
     <Identity
-      address="0x838aD0EAE54F99F1926dA7C3b6bFbF617389B4D9"
+      address={address}
+      chain={base}
       schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
       className="!bg-transparent text-white"
     >
