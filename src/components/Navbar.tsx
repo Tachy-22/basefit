@@ -16,9 +16,29 @@ import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
 import SignupButton from "./SignupButton";
 import LoginButton from "./LoginButton";
+import UserAvatar from "./UserAvatar";
+
+const dummyWalletData = {
+  address: "0x1234abcd5678efgh9012ijkl3456mnop7890qrst", // Wallet address
+  chainId: 1, // Ethereum Mainnet ID (can be different for other networks)
+  network: "Ethereum Mainnet",
+  balance: "2.5 ETH", // Balance in the wallet
+  ensName: "john.eth", // ENS name if available
+  isConnected: true, // Status of the wallet connection
+  provider: "Coinbase Wallet", // The provider used for connection
+  avatarUrl: "https://example.com/avatar.png", // Optional avatar URL (e.g., from ENS)
+  lastUpdated: new Date().toISOString(), // Timestamp of the last update
+};
 
 const AppNavbar = () => {
-  const { address } = useAccount();
+  const {
+    address,
+    isConnecting,
+    isDisconnected,
+    isReconnecting,
+    isConnected,
+    status,
+  } = useAccount();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -82,10 +102,14 @@ const AppNavbar = () => {
             text="Sign in to transact"
           />
         )} */}
-        <div className="flex items-center gap-3">
-          <SignupButton />
-          {!address && <LoginButton />}
-        </div>
+        {!address ? (
+          <UserAvatar />
+        ) : (
+          <div className="flex items-center gap-3">
+            <SignupButton />
+            <LoginButton />
+          </div>
+        )}
       </NavbarContent>
 
       {/* Mobile Menu */}
