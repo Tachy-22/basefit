@@ -1,11 +1,7 @@
 "use client";
+
 import { FC, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useAccount } from "wagmi";
-import {
-  Transaction,
-  TransactionButton,
-} from "@coinbase/onchainkit/transaction";
 import {
   Button,
   Input,
@@ -15,7 +11,6 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
-import { BASE_SEPOLIA_CHAIN_ID } from "../constants";
 
 interface Challenge {
   id: number;
@@ -26,21 +21,14 @@ interface Challenge {
   reward: number;
 }
 
-// Add these constants
-const challengeContractAddress = "0x..."; // Replace with actual contract address
-const challengeABI: never[] = []; // Replace with actual ABI
-
 const Challenges: FC = () => {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newChallenge, setNewChallenge] = useState<Partial<Challenge>>({});
-  const { address } = useAccount();
 
   useEffect(() => {
-    // Fetch challenges from the smart contract
-    const fetchChallenges = async () => {
-      // Implement the logic to fetch challenges from the smart contract
-      // For now, we'll use dummy data
+    // Fetch challenges (using dummy data)
+    const fetchChallenges = () => {
       const dummyChallenges: Challenge[] = [
         {
           id: 1,
@@ -52,11 +40,11 @@ const Challenges: FC = () => {
         },
         {
           id: 2,
-          name: "Run for Charity",
-          description: "Run 5km a day to raise money for charity.",
+          name: "Cycling Challenge",
+          description: "Cycle 50km in a week.",
           startDate: new Date(),
-          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-          reward: 200,
+          endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          reward: 150,
         },
       ];
       setChallenges(dummyChallenges);
@@ -66,149 +54,85 @@ const Challenges: FC = () => {
   }, []);
 
   const handleCreateChallenge = () => {
-    const createChallengeContract = {
-      address: challengeContractAddress,
-      abi: challengeABI,
-      functionName: "createChallenge",
-      args: [
-        newChallenge.name,
-        newChallenge.description,
-        Math.floor(new Date(newChallenge.startDate as Date).getTime() / 1000),
-        Math.floor(new Date(newChallenge.endDate as Date).getTime() / 1000),
-        newChallenge.reward,
-      ],
+    // Dummy function to create a new challenge
+    const newId = challenges.length + 1;
+    const createdChallenge: Challenge = {
+      ...newChallenge as Challenge,
+      id: newId,
     };
-
-    return (
-      <Transaction
-        contracts={[createChallengeContract]}
-        chainId={BASE_SEPOLIA_CHAIN_ID}
-        onSuccess={() => {
-          setIsCreateModalOpen(false);
-          // Refresh challenges
-        }}
-      >
-        <TransactionButton className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]" />
-      </Transaction>
-    );
-  };
-
-  const handleJoinChallenge = (challengeId: number) => {
-    const joinChallengeContract = {
-      address: challengeContractAddress,
-      abi: challengeABI,
-      functionName: "joinChallenge",
-      args: [challengeId],
-    };
-
-    return (
-      <Transaction
-        contracts={[joinChallengeContract]}
-        chainId={BASE_SEPOLIA_CHAIN_ID}
-        onSuccess={() => {
-          // Handle successful join
-        }}
-      >
-        <TransactionButton className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]" />
-      </Transaction>
-    );
+    setChallenges([...challenges, createdChallenge]);
+    setIsCreateModalOpen(false);
+    setNewChallenge({});
   };
 
   return (
-    <div className="min-h-screen bg-cyan-950 text-gray-900">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-eastern-blue-500 to-chardonnay-500 text-white py-12 text-center"
-      >
-        <h1 className="text-4xl font-bold mb-2">Challenges</h1>
-        <p className="text-xl">Join a challenge and earn rewards</p>
-        <Button onClick={() => setIsCreateModalOpen(true)} className="mt-4">
-          Create Challenge
-        </Button>
-      </motion.div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Fitness Challenges</h1>
+      <Button onClick={() => setIsCreateModalOpen(true)} className="mb-4">
+        Create New Challenge
+      </Button>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {challenges.map((challenge) => (
+          <motion.div
+            key={challenge.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white p-6 rounded-lg shadow-md"
+          >
+            <h2 className="text-xl font-semibold mb-2">{challenge.name}</h2>
+            <p className="text-gray-600 mb-4">{challenge.description}</p>
+            <p className="text-sm text-gray-500">
+              Start: {challenge.startDate.toLocaleDateString()}
+            </p>
+            <p className="text-sm text-gray-500">
+              End: {challenge.endDate.toLocaleDateString()}
+            </p>
+            <p className="text-lg font-bold mt-2">Reward: {challenge.reward} tokens</p>
+            <Button className="mt-4">Join Challenge</Button>
+          </motion.div>
+        ))}
+      </div>
 
-      <section className="py-12 px-6">
-        <h2 className="text-3xl font-bold text-center mb-8 text-white">
-          Active Challenges
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {challenges.map((challenge) => (
-            <div
-              key={challenge.id}
-              className="bg-white rounded-lg shadow-md p-6"
-            >
-              <h3 className="text-xl font-bold mb-2">{challenge.name}</h3>
-              <p>{challenge.description}</p>
-              <p>Start: {challenge.startDate.toLocaleDateString()}</p>
-              <p>End: {challenge.endDate.toLocaleDateString()}</p>
-              <p>Reward: {challenge.reward} tokens</p>
-              {handleJoinChallenge(challenge.id)}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <Modal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      >
+      <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)}>
         <ModalContent>
           <ModalHeader>Create New Challenge</ModalHeader>
           <ModalBody>
             <Input
               label="Name"
-              value={newChallenge.name}
-              onChange={(e) =>
-                setNewChallenge({ ...newChallenge, name: e.target.value })
-              }
+              value={newChallenge.name || ""}
+              onChange={(e) => setNewChallenge({ ...newChallenge, name: e.target.value })}
             />
             <Input
               label="Description"
-              value={newChallenge.description}
-              onChange={(e) =>
-                setNewChallenge({
-                  ...newChallenge,
-                  description: e.target.value,
-                })
-              }
+              value={newChallenge.description || ""}
+              onChange={(e) => setNewChallenge({ ...newChallenge, description: e.target.value })}
             />
             <Input
               label="Start Date"
               type="date"
-              value={newChallenge.startDate?.toISOString().split("T")[0]}
-              onChange={(e) =>
-                setNewChallenge({
-                  ...newChallenge,
-                  startDate: new Date(e.target.value),
-                })
-              }
+              value={newChallenge.startDate?.toISOString().split('T')[0] || ""}
+              onChange={(e) => setNewChallenge({ ...newChallenge, startDate: new Date(e.target.value) })}
             />
             <Input
               label="End Date"
               type="date"
-              value={newChallenge.endDate?.toISOString().split("T")[0]}
-              onChange={(e) =>
-                setNewChallenge({
-                  ...newChallenge,
-                  endDate: new Date(e.target.value),
-                })
-              }
+              value={newChallenge.endDate?.toISOString().split('T')[0] || ""}
+              onChange={(e) => setNewChallenge({ ...newChallenge, endDate: new Date(e.target.value) })}
             />
             <Input
               label="Reward"
               type="number"
-              value={newChallenge.reward?.toString()}
-              onChange={(e) =>
-                setNewChallenge({
-                  ...newChallenge,
-                  reward: parseInt(e.target.value),
-                })
-              }
+              value={newChallenge.reward?.toString() || ""}
+              onChange={(e) => setNewChallenge({ ...newChallenge, reward: parseInt(e.target.value) })}
             />
           </ModalBody>
-          <ModalFooter>{handleCreateChallenge()}</ModalFooter>
+          <ModalFooter>
+            <Button color="primary" onClick={handleCreateChallenge}>
+              Create Challenge
+            </Button>
+            <Button onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>
@@ -216,3 +140,5 @@ const Challenges: FC = () => {
 };
 
 export default Challenges;
+
+
