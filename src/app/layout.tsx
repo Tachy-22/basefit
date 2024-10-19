@@ -40,11 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        style={{
-          background: "url('/pexels-823sl-2294361.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "bottom",
-        }}
+       
         className="flex items-center justify-center scrollbar-hide"
       >
         <StoreProvider>

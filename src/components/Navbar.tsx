@@ -60,7 +60,7 @@ const AppNavbar = () => {
   });
 
   return (
-    <Navbar isBordered maxWidth="2xl">
+    <Navbar className="bg-transparent" maxWidth="2xl">
       <NavbarContent justify="start">
         <NavbarBrand className="w-full">
           <Link href="/" className="text-2xl font-bold ">
