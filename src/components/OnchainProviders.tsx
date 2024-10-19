@@ -19,7 +19,7 @@ function OnchainProviders({ children }: Props) {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <OnchainKitProvider apiKey={NEXT_PUBLIC_CDP_API_KEY} chain={base}>
-          <div  className=" max-w-screen w-screen ">
+          <div  className=" max-w-screen w-screen h-full ">
             {" "}
             <RainbowKitProvider modalSize="wide">{children}</RainbowKitProvider>
           </div>

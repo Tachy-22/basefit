@@ -1,179 +1,116 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Link,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-} from "@nextui-org/react";
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAccount } from "wagmi";
 import SignupButton from "./SignupButton";
 import LoginButton from "./LoginButton";
 import UserAvatar from "./UserAvatar";
 
-const dummyWalletData = {
-  address: "0x1234abcd5678efgh9012ijkl3456mnop7890qrst", // Wallet address
-  chainId: 1, // Ethereum Mainnet ID (can be different for other networks)
-  network: "Ethereum Mainnet",
-  balance: "2.5 ETH", // Balance in the wallet
-  ensName: "john.eth", // ENS name if available
-  isConnected: true, // Status of the wallet connection
-  provider: "Coinbase Wallet", // The provider used for connection
-  avatarUrl: "https://example.com/avatar.png", // Optional avatar URL (e.g., from ENS)
-  lastUpdated: new Date().toISOString(), // Timestamp of the last update
-};
-
 const AppNavbar = () => {
-  const {
-    address,
-    isConnecting,
-    isDisconnected,
-    isReconnecting,
-    isConnected,
-    status,
-  } = useAccount();
-
+  const { address, isConnected } = useAccount();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const connectWallet = () => {
-    console.log("Wallet connected!");
-  };
-
-  console.log({
-    address,
-    isConnecting,
-    isDisconnected,
-    isReconnecting,
-    isConnected,
-    status,
-  });
-
   return (
-    <Navbar className="bg-transparent" maxWidth="2xl">
-      <NavbarContent justify="start">
-        <NavbarBrand className="w-full">
-          <Link href="/" className="text-2xl font-bold ">
-            BaseFit
-          </Link>
-        </NavbarBrand>
-        <NavbarContent
-          justify="end"
-          className="hidden md:flex gap-6  w-full min-w-full mx-auto  justify-center text-white"
-        >
-          <NavbarItem>
-            <Link href="/dashboard" color="foreground">
-              Dashboard
+    <nav className="sticky top-0 z-50 bg-transparent backdrop-blur-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center">
+            <Link href="/" className="text-2xl font-bold text-white">
+              BaseFit
             </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link href="/challenges" color="foreground">
-              Challenges
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link href="/marketplace" color="foreground">
-              Marketplace
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link href="/charity" color="foreground">
-              Charity
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link href="/profile" color="foreground">
-              Profile
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
-      </NavbarContent>
-
-      <NavbarContent justify="end" className="hidden md:flex">
-        {/* <Button onClick={connectWallet} color="primary">
-          Connect Wallet
-        </Button> */}
-        {/* {address ? (
-          <TransactionWrapper address={address} />
-        ) : (
-          <WalletWrapper
-            className="w-[450px] max-w-full"
-            text="Sign in to transact"
-          />
-        )} */}
-        {address ? (
-          <UserAvatar />
-        ) : (
-          <div className="flex items-center gap-3">
-            <SignupButton />
-            <LoginButton />
           </div>
-        )}
-      </NavbarContent>
-
-      {/* Mobile Menu */}
-      <NavbarContent className="md:hidden">
-        <Button onClick={toggleMenu}>{isOpen ? "Close" : "Menu"}</Button>
-      </NavbarContent>
-
-      {isOpen && (
-        <motion.div
-          initial={{ height: 0 }}
-          animate={{ height: "auto" }}
-          transition={{ duration: 0.3 }}
-          className="absolute w-full bg-white shadow-md md:hidden"
-        >
-          <ul className="flex flex-col items-center space-y-4 py-4">
-            <li>
-              <Link href="/dashboard" onClick={toggleMenu}>
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-4">
+              <Link href="/dashboard" className="text-white hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                 Dashboard
               </Link>
-            </li>
-            <li>
-              <Link href="/challenges" onClick={toggleMenu}>
+              <Link href="/challenges" className="text-white hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                 Challenges
               </Link>
-            </li>
-            <li>
-              <Link href="/marketplace" onClick={toggleMenu}>
+              <Link href="/marketplace" className="text-white hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                 Marketplace
               </Link>
-            </li>
-            <li>
-              <Link href="/charity" onClick={toggleMenu}>
+              <Link href="/charity" className="text-white hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                 Charity
               </Link>
-            </li>
-            <li>
-              <Link href="/profile" onClick={toggleMenu}>
+              <Link href="/profile" className="text-white hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                 Profile
               </Link>
-            </li>
-            <li>
-              <Button
-                onClick={() => {
-                  connectWallet();
-                  toggleMenu();
-                }}
-                color="primary"
-              >
-                Connect Wallet
-              </Button>
-            </li>
-          </ul>
-        </motion.div>
-      )}
-    </Navbar>
+            </div>
+          </div>
+          <div className="hidden md:block">
+            {address ? (
+              <UserAvatar />
+            ) : (
+              <div className="flex items-center gap-3">
+                <SignupButton />
+                <LoginButton />
+              </div>
+            )}
+          </div>
+          <div className="md:hidden">
+            <button
+              onClick={toggleMenu}
+              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+            >
+              <span className="sr-only">Open main menu</span>
+              {isOpen ? (
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden"
+          >
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-800">
+              <Link href="/dashboard" className="text-white hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                Dashboard
+              </Link>
+              <Link href="/challenges" className="text-white hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                Challenges
+              </Link>
+              <Link href="/marketplace" className="text-white hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                Marketplace
+              </Link>
+              <Link href="/charity" className="text-white hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                Charity
+              </Link>
+              <Link href="/profile" className="text-white hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                Profile
+              </Link>
+              {address ? (
+                <UserAvatar />
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <SignupButton />
+                  <LoginButton />
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
   );
 };
 

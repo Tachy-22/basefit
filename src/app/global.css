@@ -5,8 +5,8 @@
 
 :root {
   /* Palette */
-  --palette-bg-black: #fff;
-  --palette-bg-white: rgb(21, 26, 38);
+  --palette-bg-black: #083344;
+  --palette-bg-white: #083344;
 
   /* Indicates that the element can be rendered using 
    * the operating system dark color scheme. 
