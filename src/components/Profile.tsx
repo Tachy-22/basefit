@@ -14,6 +14,7 @@ import {
   FaFire,
   FaHeartbeat,
   FaDumbbell,
+  FaCheck,
 } from "react-icons/fa";
 import {
   LineChart,
@@ -37,6 +38,7 @@ const Profile: FC = () => {
   const [fitnessCandies, setFitnessCandies] = useState(0);
   const [activeTab, setActiveTab] = useState("profile");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   // Mock user data
   useEffect(() => {
@@ -60,6 +62,12 @@ const Profile: FC = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const copyAddress = () => {
+    navigator.clipboard.writeText(address || "");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1000);
   };
 
   const mockChartData = [
@@ -90,14 +98,17 @@ const Profile: FC = () => {
                 </div>
                 <h1 className="text-4xl font-bold mb-2">My Dashboard</h1>
                 <button
-                  onClick={() => navigator.clipboard.writeText(address || "")}
+                  onClick={copyAddress}
                   className="text-xl bg-white text-[#0097A7] hover:bg-gray-800 px-4 py-2 rounded-full flex items-center transition duration-300"
                 >
                   {address
                     ? `${address.slice(0, 6)}...${address.slice(-4)}`
                     : "No address"}
-                  <span className="ml-2">📋</span>
+                  <span className="ml-2">{copied ? <FaCheck /> : "📋"}</span>
                 </button>
+                {copied && (
+                  <span className="text-sm mt-2 text-white">Copied!</span>
+                )}
               </div>
             </motion.div>
 
@@ -315,7 +326,7 @@ const Profile: FC = () => {
         initial={{ width: isSidebarOpen ? "16rem" : "4rem" }}
         animate={{ width: isSidebarOpen ? "16rem" : "4rem" }}
         transition={{ duration: 0.3 }}
-        className={`  py-6 flex flex-col ${isSidebarOpen ? "absolute bg-gray-800/90 backdrop-blur-xl   " : "md:relative bg-gray-800"}  min-h-full z-10`}
+        className={`py-6 flex flex-col ${isSidebarOpen ? "absolute md:relative bg-gray-800/80 backdrop-blur-xl" : "md:relative bg-gray-800"} min-h-full z-10`}
       >
         <button
           onClick={toggleSidebar}

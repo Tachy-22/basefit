@@ -36,7 +36,9 @@ const AppNavbar = () => {
       <Link
         href={href}
         className={`block w-full text-white hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${
-          isActive ? "border-l-4 lg:border-b-4 border-coral-500 bg-gray-700" : ""
+          isActive
+            ? "border-l-4 lg:border-b-4 lg:border-l-0 border-coral-500 text-coral-200"
+            : ""
         }`}
         onClick={() => setIsOpen(false)}
       >
@@ -54,8 +56,8 @@ const AppNavbar = () => {
               BaseFit
             </Link>
           </div>
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+          <div className="hidden lg:block">
+            <div className="ml-10 flex items-baseline gap-4">
               <NavLink href="/dashboard">Dashboard</NavLink>
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
@@ -63,7 +65,7 @@ const AppNavbar = () => {
               <NavLink href="/user">User</NavLink>
             </div>
           </div>
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             {address ? (
               <UserAvatar />
             ) : (
@@ -73,7 +75,7 @@ const AppNavbar = () => {
               </div>
             )}
           </div>
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -124,7 +126,7 @@ const AppNavbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden"
+            className="lg:hidden md"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-800">
               <NavLink href="/dashboard">Dashboard</NavLink>
