@@ -1,41 +1,39 @@
 "use client";
 import {
-  Avatar,
-  Identity,
-  Name,
-  Badge,
   Address,
+  Avatar,
+  Name,
+  Identity,
+  EthBalance,
 } from "@coinbase/onchainkit/identity";
-import { base } from "viem/chains";
+import { color } from "@coinbase/onchainkit/theme";
+import {
+  ConnectWallet,
+  Wallet,
+  WalletDropdown,
+  WalletDropdownBasename,
+  WalletDropdownDisconnect,
+} from "@coinbase/onchainkit/wallet";
 
-import { useAccount } from "wagmi";
-
-import React from "react";
-
-const UserAvatar = () => {
-  const {
-    address,
-    isConnecting,
-    isDisconnected,
-    isReconnecting,
-    isConnected,
-    status,
-  } = useAccount();
-  
+export default function UserAvatar() {
   return (
-    <Identity
-      address={address}
-      chain={base}
-      schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
-      className="!bg-transparent text-white"
-    >
-      <Avatar />
-      <Name className="text-white">
-        <Badge />
-      </Name>
-      <Address className="text-white" />
-    </Identity>
+    <div className="flex justify-end">
+      <Wallet>
+        <ConnectWallet>
+          <Avatar className="h-6 w-6" />
+          <Name />
+        </ConnectWallet>
+        <WalletDropdown>
+          <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+            <Avatar />
+            <Name />
+            <Address className={color.foregroundMuted} />
+            <EthBalance />
+          </Identity>
+          <WalletDropdownBasename />
+          <WalletDropdownDisconnect />
+        </WalletDropdown>
+      </Wallet>
+    </div>
   );
-};
-
-export default UserAvatar;
+}

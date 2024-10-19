@@ -7,11 +7,8 @@ import { Button } from "@nextui-org/react";
 import WalletWrapper from "./WalletWrapper";
 import { useAccount } from "wagmi";
 
-
 const Home: FC = () => {
   const { address, isConnected } = useAccount();
-
-
 
   return (
     <div className="h-full relative overflow-hidden bg-[#083344] ">
@@ -85,11 +82,11 @@ const Home: FC = () => {
             How It Works
           </h2>
           <div className="flex flex-col md:flex-row items-center justify-between space-y-12 md:space-y-0 md:space-x-8">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/2 mx-auto h-[30rem] overflow-hidden flex items-end justify-center">
               <img
-                src="/pexels-823sl-2294361.jpg"
+                src="/jog.png"
                 alt="How It Works"
-                className="rounded-lg shadow-2xl"
+                className="object-bottom "
               />
             </div>
             <div className="w-full md:w-1/2 space-y-6">
@@ -181,7 +178,7 @@ const Home: FC = () => {
           <div className="mt-8 space-y-8">
             <blockquote className="italic border-l-4 border-cyan-500 pl-4 py-2 my-4">
               <p className="text-gray-200 mb-2">
-                "FitChain has completely transformed my fitness journey. The
+                "BaseFit has completely transformed my fitness journey. The
                 blockchain integration adds a whole new level of motivation!"
               </p>
               <footer className="text-white font-semibold">- Sarah J.</footer>
@@ -196,7 +193,7 @@ const Home: FC = () => {
             <blockquote className="italic border-l-4 border-green-500 pl-4 py-2 my-4">
               <p className="text-gray-200 mb-2">
                 "The community challenges keep me engaged and push me to achieve
-                more. FitChain is revolutionary!"
+                more. BaseFit is revolutionary!"
               </p>
               <footer className="text-white font-semibold">- Emily R.</footer>
             </blockquote>
@@ -210,7 +207,7 @@ const Home: FC = () => {
               <div className="md:flex md:items-center md:justify-between">
                 <div className="md:w-3/5">
                   <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-                    Ready to Start Your FitChain Journey?
+                    Ready to Start Your BaseFit Journey?
                   </h2>
                   <p className="text-lg md:text-xl text-cyan-100 mb-8">
                     Join now and get 100 FitTokens as a welcome bonus!
