@@ -36,7 +36,7 @@ const AppNavbar = () => {
       <Link
         href={href}
         className={`block w-full text-white hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${
-          isActive ? "border-l-4 border-coral-500 bg-gray-700" : ""
+          isActive ? "border-l-4 lg:border-b-4 border-coral-500 bg-gray-700" : ""
         }`}
         onClick={() => setIsOpen(false)}
       >
@@ -133,7 +133,7 @@ const AppNavbar = () => {
               <NavLink href="/charity">Charity</NavLink>
               <NavLink href="/user">User</NavLink>
               {address ? (
-                <div className="mt-4  pl-3 lg:pl-0">
+                <div className="mt-6  mx-auto w-full">
                   <UserAvatar />
                 </div>
               ) : (

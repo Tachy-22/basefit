@@ -4,13 +4,33 @@
 import { FC, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
-import { FaUser, FaTrophy, FaChartLine, FaClipboardList, FaBars, FaFire, FaHeartbeat, FaDumbbell } from "react-icons/fa";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  FaUser,
+  FaTrophy,
+  FaChartLine,
+  FaClipboardList,
+  FaChevronLeft,
+  FaChevronRight,
+  FaFire,
+  FaHeartbeat,
+  FaDumbbell,
+} from "react-icons/fa";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const Profile: FC = () => {
   const { address } = useAccount();
   const [newGoal, setNewGoal] = useState("");
-  const [goals, setGoals] = useState<{ goal: string; completed: boolean }[]>([]);
+  const [goals, setGoals] = useState<{ goal: string; completed: boolean }[]>(
+    []
+  );
   const [points, setPoints] = useState(0);
   const [achievementLevel, setAchievementLevel] = useState(1);
   const [loginStreak, setLoginStreak] = useState(0);
@@ -27,7 +47,7 @@ const Profile: FC = () => {
     setGoals([
       { goal: "Run 5km", completed: false },
       { goal: "Do 100 pushups", completed: true },
-      { goal: "Swim for 30 minutes", completed: false }
+      { goal: "Swim for 30 minutes", completed: false },
     ]);
   }, []);
 
@@ -43,13 +63,13 @@ const Profile: FC = () => {
   };
 
   const mockChartData = [
-    { name: 'Mon', steps: 6000 },
-    { name: 'Tue', steps: 8000 },
-    { name: 'Wed', steps: 7500 },
-    { name: 'Thu', steps: 9000 },
-    { name: 'Fri', steps: 8500 },
-    { name: 'Sat', steps: 10000 },
-    { name: 'Sun', steps: 9500 },
+    { name: "Mon", steps: 6000 },
+    { name: "Tue", steps: 8000 },
+    { name: "Wed", steps: 7500 },
+    { name: "Thu", steps: 9000 },
+    { name: "Fri", steps: 8500 },
+    { name: "Sat", steps: 10000 },
+    { name: "Sun", steps: 9500 },
   ];
 
   const renderContent = () => {
@@ -70,10 +90,12 @@ const Profile: FC = () => {
                 </div>
                 <h1 className="text-4xl font-bold mb-2">My Dashboard</h1>
                 <button
-                  onClick={() => navigator.clipboard.writeText(address || '')}
+                  onClick={() => navigator.clipboard.writeText(address || "")}
                   className="text-xl bg-white text-[#0097A7] hover:bg-gray-800 px-4 py-2 rounded-full flex items-center transition duration-300"
                 >
-                  {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'No address'}
+                  {address
+                    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+                    : "No address"}
                   <span className="ml-2">📋</span>
                 </button>
               </div>
@@ -81,71 +103,109 @@ const Profile: FC = () => {
 
             {/* Quick Stats */}
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-white">Points Balance</h3>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Points Balance
+              </h3>
               <div className="flex items-center justify-between">
                 <FaFire className="text-4xl text-[#FFC67D]" />
                 <p className="text-5xl font-bold text-white">{points}</p>
               </div>
-              <p className="text-sm text-gray-400 mt-2">Convertible to Ethereum</p>
+              <p className="text-sm text-gray-400 mt-2">
+                Convertible to Ethereum
+              </p>
             </div>
 
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-white">Achievement Level</h3>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Achievement Level
+              </h3>
               <div className="flex items-center justify-between">
                 <FaTrophy className="text-4xl text-[#FFC67D]" />
-                <p className="text-5xl font-bold text-white">{achievementLevel}</p>
+                <p className="text-5xl font-bold text-white">
+                  {achievementLevel}
+                </p>
               </div>
-              <p className="text-sm text-gray-400 mt-2">Next level: {loginStreak}/3 days</p>
+              <p className="text-sm text-gray-400 mt-2">
+                Next level: {loginStreak}/3 days
+              </p>
             </div>
 
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-white">Login Streak</h3>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Login Streak
+              </h3>
               <div className="flex items-center justify-between">
                 <FaHeartbeat className="text-4xl text-[#FFC67D]" />
                 <p className="text-5xl font-bold text-white">{loginStreak}</p>
               </div>
-              <p className="text-sm text-gray-400 mt-2">Keep logging in daily!</p>
+              <p className="text-sm text-gray-400 mt-2">
+                Keep logging in daily!
+              </p>
             </div>
 
             {/* Activity Chart */}
             <div className="col-span-full bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-white">Weekly Activity</h3>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Weekly Activity
+              </h3>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={mockChartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
                   <XAxis dataKey="name" stroke="#ffffff" />
                   <YAxis stroke="#ffffff" />
-                  <Tooltip contentStyle={{ backgroundColor: '#1a202c', border: 'none' }} />
-                  <Line type="monotone" dataKey="steps" stroke="#0097A7" activeDot={{ r: 8 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#1a202c",
+                      border: "none",
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="steps"
+                    stroke="#0097A7"
+                    activeDot={{ r: 8 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
             {/* Recent Achievements */}
             <div className="col-span-full md:col-span-1 bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-white">Recent Achievements</h3>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Recent Achievements
+              </h3>
               <ul className="space-y-2">
                 <li className="flex items-center text-white">
-                  <FaDumbbell className="mr-2 text-[#FFC67D]" /> Completed 100 push-ups challenge
+                  <FaDumbbell className="mr-2 text-[#FFC67D]" /> Completed 100
+                  push-ups challenge
                 </li>
                 <li className="flex items-center text-white">
-                  <FaHeartbeat className="mr-2 text-[#FFC67D]" /> Maintained 7-day workout streak
+                  <FaHeartbeat className="mr-2 text-[#FFC67D]" /> Maintained
+                  7-day workout streak
                 </li>
                 <li className="flex items-center text-white">
-                  <FaFire className="mr-2 text-[#FFC67D]" /> Burned 5000 calories this week
+                  <FaFire className="mr-2 text-[#FFC67D]" /> Burned 5000
+                  calories this week
                 </li>
               </ul>
             </div>
 
             {/* Quick Goals */}
             <div className="col-span-full md:col-span-2 bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-white">Quick Goals</h3>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Quick Goals
+              </h3>
               <div className="flex flex-wrap gap-4">
                 {goals.slice(0, 3).map((goal, index) => (
-                  <div key={index} className="bg-gray-900 p-3 rounded-lg flex items-center justify-between w-full sm:w-auto flex-grow">
+                  <div
+                    key={index}
+                    className="bg-gray-900 p-3 rounded-lg flex items-center justify-between w-full sm:w-auto flex-grow"
+                  >
                     <span className="text-white">{goal.goal}</span>
-                    <span className={`text-sm ${goal.completed ? 'text-[#0097A7]' : 'text-[#FFC67D]'}`}>
-                      {goal.completed ? 'Completed' : 'In Progress'}
+                    <span
+                      className={`text-sm ${goal.completed ? "text-[#0097A7]" : "text-[#FFC67D]"}`}
+                    >
+                      {goal.completed ? "Completed" : "In Progress"}
                     </span>
                   </div>
                 ))}
@@ -156,7 +216,9 @@ const Profile: FC = () => {
       case "stats":
         return (
           <section className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <h2 className="text-3xl font-bold text-center mb-8 col-span-full text-white">Fitness Stats</h2>
+            <h2 className="text-3xl font-bold text-center mb-8 col-span-full text-white">
+              Fitness Stats
+            </h2>
             <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
               <h3 className="text-xl font-bold mb-2">Total Steps</h3>
               <p className="text-4xl font-bold">120,000</p>
@@ -174,18 +236,28 @@ const Profile: FC = () => {
       case "achievements":
         return (
           <section className="p-6 bg-gray-900">
-            <h2 className="text-3xl font-bold text-center mb-8 text-white">Achievements</h2>
+            <h2 className="text-3xl font-bold text-center mb-8 text-white">
+              Achievements
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="rounded-lg shadow-lg p-6 bg-gray-800">
-                <h3 className="text-xl font-bold mb-2 text-white">Marathon Finisher</h3>
+                <h3 className="text-xl font-bold mb-2 text-white">
+                  Marathon Finisher
+                </h3>
                 <p className="text-gray-400">Completed a full marathon</p>
               </div>
               <div className="rounded-lg shadow-lg p-6 bg-gray-800">
-                <h3 className="text-xl font-bold mb-2 text-white">10,000 Steps Streak</h3>
-                <p className="text-gray-400">Walked 10,000 steps for 30 days straight</p>
+                <h3 className="text-xl font-bold mb-2 text-white">
+                  10,000 Steps Streak
+                </h3>
+                <p className="text-gray-400">
+                  Walked 10,000 steps for 30 days straight
+                </p>
               </div>
               <div className="rounded-lg shadow-lg p-6 bg-gray-800">
-                <h3 className="text-xl font-bold mb-2 text-white">Weight Loss Champion</h3>
+                <h3 className="text-xl font-bold mb-2 text-white">
+                  Weight Loss Champion
+                </h3>
                 <p className="text-gray-400">Lost 20 pounds in 3 months</p>
               </div>
             </div>
@@ -194,7 +266,9 @@ const Profile: FC = () => {
       case "goals":
         return (
           <section className="p-6 bg-gray-900">
-            <h2 className="text-3xl font-bold text-center mb-8 text-white">Fitness Goals</h2>
+            <h2 className="text-3xl font-bold text-center mb-8 text-white">
+              Fitness Goals
+            </h2>
             <div className="max-w-3xl mx-auto">
               <div className="flex mb-6">
                 <input
@@ -213,10 +287,15 @@ const Profile: FC = () => {
               </div>
               <div className="space-y-4">
                 {goals.map((goal, index) => (
-                  <div key={index} className="p-4 rounded-lg shadow-md bg-gray-800 flex items-center justify-between">
+                  <div
+                    key={index}
+                    className="p-4 rounded-lg shadow-md bg-gray-800 flex items-center justify-between"
+                  >
                     <span className="text-white text-lg">{goal.goal}</span>
-                    <span className={`text-sm font-semibold px-3 py-1 rounded-full ${goal.completed ? 'bg-[#0097A7] text-white' : 'bg-[#FFC67D] text-gray-800'}`}>
-                      {goal.completed ? 'Completed' : 'In Progress'}
+                    <span
+                      className={`text-sm font-semibold px-3 py-1 rounded-full ${goal.completed ? "bg-[#0097A7] text-white" : "bg-[#FFC67D] text-gray-800"}`}
+                    >
+                      {goal.completed ? "Completed" : "In Progress"}
                     </span>
                   </div>
                 ))}
@@ -230,22 +309,31 @@ const Profile: FC = () => {
   };
 
   return (
-    <div className="min-h-screen text-white bg-gray-900 flex">
+    <div className="min-h-screen text-white bg-gray-900 flex relative">
       {/* Collapsible Sidebar */}
       <motion.div
         initial={{ width: isSidebarOpen ? "16rem" : "4rem" }}
         animate={{ width: isSidebarOpen ? "16rem" : "4rem" }}
         transition={{ duration: 0.3 }}
-        className="bg-gray-800 p-6 flex flex-col"
+        className={`  py-6 flex flex-col ${isSidebarOpen ? "absolute bg-gray-800/90 backdrop-blur-xl   " : "md:relative bg-gray-800"}  min-h-full z-10`}
       >
-        <button onClick={toggleSidebar} className="self-end mb-6 text-white hover:text-[#FFC67D] transition duration-300">
-          <FaBars size={24} />
+        <button
+          onClick={toggleSidebar}
+          className="self-end mb-6 px-3 text-white hover:text-[#FFC67D] transition duration-300"
+        >
+          {isSidebarOpen ? (
+            <FaChevronLeft size={18} />
+          ) : (
+            <FaChevronRight size={18} />
+          )}
         </button>
         <nav className="flex flex-col space-y-4">
           <button
             onClick={() => setActiveTab("profile")}
-            className={`flex items-center space-x-2 w-full p-2 rounded transition duration-300 ${
-              activeTab === "profile" ? "bg-[#0097A7] text-white" : "text-gray-400 hover:bg-[#0097A7] hover:text-white"
+            className={`flex items-center space-x-2 w-full p-2 px-4 transition duration-300 ${
+              activeTab === "profile"
+                ? "bg-[#0097A7] text-white"
+                : "text-gray-400 hover:bg-[#0097A7] hover:text-white"
             }`}
           >
             <FaUser />
@@ -253,8 +341,10 @@ const Profile: FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("stats")}
-            className={`flex items-center space-x-2 w-full p-2 rounded transition duration-300 ${
-              activeTab === "stats" ? "bg-[#0097A7] text-white" : "text-gray-400 hover:bg-[#0097A7] hover:text-white"
+            className={`flex items-center space-x-2 w-full p-2 px-4 transition duration-300 ${
+              activeTab === "stats"
+                ? "bg-[#0097A7] text-white"
+                : "text-gray-400 hover:bg-[#0097A7] hover:text-white"
             }`}
           >
             <FaChartLine />
@@ -262,8 +352,10 @@ const Profile: FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("achievements")}
-            className={`flex items-center space-x-2 w-full p-2 rounded transition duration-300 ${
-              activeTab === "achievements" ? "bg-[#0097A7] text-white" : "text-gray-400 hover:bg-[#0097A7] hover:text-white"
+            className={`flex items-center space-x-2 w-full p-2 px-4 transition duration-300 ${
+              activeTab === "achievements"
+                ? "bg-[#0097A7] text-white"
+                : "text-gray-400 hover:bg-[#0097A7] hover:text-white"
             }`}
           >
             <FaTrophy />
@@ -271,8 +363,10 @@ const Profile: FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("goals")}
-            className={`flex items-center space-x-2 w-full p-2 rounded transition duration-300 ${
-              activeTab === "goals" ? "bg-[#0097A7] text-white" : "text-gray-400 hover:bg-[#0097A7] hover:text-white"
+            className={`flex items-center space-x-2 w-full p-2 px-4 transition duration-300 ${
+              activeTab === "goals"
+                ? "bg-[#0097A7] text-white"
+                : "text-gray-400 hover:bg-[#0097A7] hover:text-white"
             }`}
           >
             <FaClipboardList />
@@ -282,9 +376,7 @@ const Profile: FC = () => {
       </motion.div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto">
-        {renderContent()}
-      </div>
+      <div className="flex-1 overflow-y-auto">{renderContent()}</div>
     </div>
   );
 };

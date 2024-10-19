@@ -17,14 +17,14 @@ import {
 
 export default function UserAvatar() {
   return (
-    <div className="flex lg:justify-end pl-3 lg:pl-0">
+    <div className="flex lg:justify-end pl-3 lg:pl-0 w-full">
       <Wallet>
         <ConnectWallet>
           <Avatar className="h-6 w-6" />
           <Name />
         </ConnectWallet>
-        <WalletDropdown >
-          <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+        <WalletDropdown>
+          <Identity className="px-4 pt-3 pb-2 w-full" hasCopyAddressOnClick>
             <Avatar />
             <Name />
             <Address className={color.foregroundMuted} />
