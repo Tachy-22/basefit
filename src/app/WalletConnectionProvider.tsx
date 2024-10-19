@@ -4,35 +4,41 @@ import { useAccount } from "wagmi";
 import { connectWallet } from "./actions/user";
 import { setWallet } from "src/lib/redux/walletSlice";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import Cookies from 'js-cookie';
 
-const WalletConnectionProvider = ({
-  children,
-}: {
+interface WalletConnectionProviderProps {
   children: React.ReactNode;
+}
+
+const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
+  children,
 }) => {
-  const {
-    address,
-    isConnecting,
-    isDisconnected,
-    isReconnecting,
-    isConnected,
-    status,
-  } = useAccount();
+  const { address, isConnected } = useAccount();
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
-    if (address) {
-      const checkUser = async () => {
+    const checkUserAndSetCookie = async () => {
+      if (address && isConnected) {
+        // Fetch user data from Firebase
         const userData = await connectWallet(address);
         console.log("userData from firebase : ", userData);
+        // Update Redux store with wallet data
         dispatch(setWallet(userData as unknown as TWalletData));
-      };
-      checkUser();
-    } else {
-    }
-  }, []);
+        // Set a cookie to indicate wallet connection
+        Cookies.set('wallet_token', 'connected', { expires: 7 }); // Expires in 7 days
+      } else {
+        // Remove the cookie if wallet is disconnected
+        Cookies.remove('wallet_token');
+      }
+    };
 
-  return <div>{children}</div>;
+    checkUserAndSetCookie();
+  }, [address, isConnected, dispatch]);
+
+  // Render children components
+  return <>{children}</>;
 };
 
 export default WalletConnectionProvider;
