@@ -61,7 +61,7 @@ const AppNavbar = () => {
               <NavLink href="/dashboard">Dashboard</NavLink>
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
-              <NavLink href="/charity">Charity</NavLink>
+           {/* <NavLink href="/charity">Charity</NavLink> */}
               <NavLink href="/user">User</NavLink>
             </div>
           </div>

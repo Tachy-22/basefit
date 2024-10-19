@@ -67,6 +67,7 @@ const Loader = () => {
           </g>
         </svg>
       </div>
+   
     </div>
   );
 };
