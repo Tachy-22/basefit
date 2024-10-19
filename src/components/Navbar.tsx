@@ -35,10 +35,10 @@ const AppNavbar = () => {
     return (
       <Link
         href={href}
-        className={`block w-full text-white hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${
+        className={`block w-full  hover:bg-gray-700 hover:text-white px-3 py-2 lg:rounded-md text-sm font-medium ${
           isActive
-            ? "border-l-4 lg:border-b-4 lg:border-l-0 border-coral-500 text-coral-200"
-            : ""
+            ? "!text-coral-400 lg:border-b-4 lg:border-l-0 border-coral-500 lg:!text-coral-200"
+            : "text-white"
         }`}
         onClick={() => setIsOpen(false)}
       >
@@ -61,7 +61,7 @@ const AppNavbar = () => {
               <NavLink href="/dashboard">Dashboard</NavLink>
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
-           {/* <NavLink href="/charity">Charity</NavLink> */}
+              {/* <NavLink href="/charity">Charity</NavLink> */}
               <NavLink href="/user">User</NavLink>
             </div>
           </div>
@@ -132,7 +132,7 @@ const AppNavbar = () => {
               <NavLink href="/dashboard">Dashboard</NavLink>
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
-              <NavLink href="/charity">Charity</NavLink>
+              {/* <NavLink href="/charity">Charity</NavLink> */}
               <NavLink href="/user">User</NavLink>
               {address ? (
                 <div className="mt-6  mx-auto w-full">

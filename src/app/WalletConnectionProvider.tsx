@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { connectWallet } from "./actions/user";
 import { setWallet } from "src/lib/redux/walletSlice";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface WalletConnectionProviderProps {
   children: React.ReactNode;
@@ -16,7 +16,8 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
   const { address, isConnected } = useAccount();
   const dispatch = useDispatch();
   const router = useRouter();
-  const [showMessage, setShowMessage] = useState(false);
+  const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkUserAndSetWallet = async () => {
@@ -26,36 +27,25 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
         console.log("userData from firebase : ", userData);
         // Update Redux store with wallet data
         dispatch(setWallet(userData as unknown as TWalletData));
+        setIsLoading(false);
+      } else if (pathname !== "/") {
+        // Redirect to homepage if not connected and not already on homepage
+        router.push('/');
       } else {
-        // Show message when navigation is done and wallet is not connected
-        setShowMessage(true);
-        setTimeout(() => setShowMessage(false), 5000); // Hide message after 5 seconds
+        // If on homepage, allow loading without connection
+        setIsLoading(false);
       }
     };
 
     checkUserAndSetWallet();
-  }, [address, isConnected, dispatch]);
+  }, [address, isConnected, dispatch, router, pathname]);
 
-  // Render children components and message
-  return (
-    <>
-      {showMessage && !isConnected && (
-        <div style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          backgroundColor: '#f0f0f0',
-          padding: '10px',
-          borderRadius: '5px',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-          zIndex: 1000
-        }}>
-          Please connect your wallet to access all features.
-        </div>
-      )}
-      {children}
-    </>
-  );
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a more sophisticated loading component
+  }
+
+  // Render children if connected or on homepage
+  return (isConnected || pathname === "/") ? <>{children}</> : null;
 };
 
 export default WalletConnectionProvider;
