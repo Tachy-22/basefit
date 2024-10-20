@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import { base } from "viem/chains";
 import { WagmiProvider } from "wagmi";
 import { NEXT_PUBLIC_CDP_API_KEY } from "../config";
-import { useWagmiConfig } from "../wagmi";
 import {
   metaMaskWallet,
   rainbowWallet,
@@ -40,22 +39,21 @@ const connectors = connectorsForWallets(
 
 const wagmiConfig = getDefaultConfig({
   appName: "onchainkit",
-  connectors,
   projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID as string,
   chains: [base],
   ssr: true, // If your dApp uses server side rendering (SSR)
+ // connectors, // Include connectors here to avoid errors
 });
 
 function OnchainProviders({ children }: Props) {
-  // const wagmiConfig = useWagmiConfig();
-
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <OnchainKitProvider apiKey={NEXT_PUBLIC_CDP_API_KEY} chain={base}>
           <div className=" max-w-screen w-screen h-full ">
-            {" "}
-            <RainbowKitProvider modalSize="wide">{children}</RainbowKitProvider>
+            <RainbowKitProvider modalSize="wide" >
+              {children}
+            </RainbowKitProvider>
           </div>
         </OnchainKitProvider>
       </QueryClientProvider>
