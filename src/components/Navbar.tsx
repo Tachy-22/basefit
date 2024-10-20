@@ -62,7 +62,7 @@ const AppNavbar = () => {
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
               {/* <NavLink href="/charity">Charity</NavLink> */}
-              <NavLink href="/user">User</NavLink>
+              {/* <NavLink href="/user">Dashboard</NavLink> */}
             </div>
           </div>
           <div className="hidden lg:block">
@@ -132,8 +132,8 @@ const AppNavbar = () => {
               <NavLink href="/dashboard">Dashboard</NavLink>
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
-              {/* <NavLink href="/charity">Charity</NavLink> */}
-              <NavLink href="/user">User</NavLink>
+              {/* <NavLink href="/charity">Charity</NavLink>               <NavLink href="/user">Dashboard</NavLink>
+               */}
               {address ? (
                 <div className="mt-6  mx-auto w-full">
                   <UserAvatar />

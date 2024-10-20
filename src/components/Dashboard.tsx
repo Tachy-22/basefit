@@ -1,115 +1,197 @@
 "use client";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { FaFire, FaHeartbeat, FaDumbbell } from 'react-icons/fa';
 
-// pages/dashboard.tsx
-import { FC } from "react";
-import { motion } from "framer-motion";
-//import Link from "next/link";
+const Dashboard = () => {
+  const [steps, setSteps] = useState<number>(3500);
+  const [distance, setDistance] = useState<number>(2.8);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [outputValue, setOutputValue] = useState<string>("");
+  const [bfPoints, setBfPoints] = useState<number>(1250);
+  const [dailyGoal, setDailyGoal] = useState<number>(4000);
+  const [todayPoints, setTodayPoints] = useState<number>(350);
+  const [ethereumBalance, setEthereumBalance] = useState<number>(0.003125);
+  const [caloriesBurned, setCaloriesBurned] = useState<number>(0);
+  const [heartRate, setHeartRate] = useState<number>(70);
+  const [progress, setProgress] = useState<number>(0);
 
-const Dashboard: FC = () => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleConversion = () => {
+    const ethereumRate = 0.0000025;
+    if (inputValue) {
+      const inputAsNumber = parseFloat(inputValue);
+      if (!isNaN(inputAsNumber) && inputAsNumber <= bfPoints) {
+        setOutputValue((inputAsNumber * ethereumRate).toFixed(8));
+      } else if (inputAsNumber > bfPoints) {
+        alert("You don't have enough BF points for this conversion.");
+      } else {
+        setOutputValue("Invalid Input");
+      }
+    }
+  };
+
+  const handleReset = () => {
+    setInputValue("");
+    setOutputValue("");
+  };
+
+  const getEncouragement = (steps: number): string => {
+    if (steps < dailyGoal) {
+      return `Keep going! You're ${dailyGoal - steps} steps away from your daily goal.`;
+    } else {
+      return "Fantastic! You've reached your daily goal. Why not push for more?";
+    }
+  };
+
+  useEffect(() => {
+    // Simulating step count increase
+    const interval = setInterval(() => {
+      setSteps((prevSteps) => {
+        const newSteps = prevSteps + Math.floor(Math.random() * 10);
+        setBfPoints(Math.floor(newSteps / 100));
+        setDistance(newSteps * 0.0008);
+        setTodayPoints(Math.floor(newSteps / 10));
+        setCaloriesBurned(Math.floor(newSteps * 0.05));
+        setHeartRate(70 + Math.floor(Math.random() * 30));
+        return newSteps;
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const progressInterval = setInterval(() => {
+      setProgress((prevProgress) => {
+        const newProgress = (steps / dailyGoal) * 100;
+        return Math.min(newProgress, 100);
+      });
+    }, 100);
+
+    return () => clearInterval(progressInterval);
+  }, [steps, dailyGoal]);
+
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      {/* Main Content */}
-      <main className="container mx-auto py-12 px-6">
-        {/* User Summary */}
-        <section className="mb-12">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white rounded-lg shadow-md p-6 flex justify-between items-center"
+    <div className="bg-gray-900 text-white p-6 w-full lg:flex lg:flex-col lg:items-center">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg md:mt-10 lg:w-3/5 mb-6">
+        <p className="text-sm text-gray-400 font-semibold">
+          Push beyond your limits today, because the greatest growth comes from the{" "}
+          <button className="text-[#FFC67D] text-semibold underline">
+            challenges
+          </button>{" "}
+          you dare to face.
+        </p>
+      </div>
+
+      <div className="lg:flex lg:gap-6 lg:w-3/5">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 lg:w-1/2">
+          <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Daily Progress</h3>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-2xl font-bold">{steps} steps</p>
+            <div className="w-24 h-24">
+              <CircularProgressbar
+                value={progress}
+                text={`${progress.toFixed(0)}%`}
+                styles={buildStyles({
+                  textColor: "#FFC67D",
+                  pathColor: "#FFC67D",
+                  trailColor: "#374151"
+                })}
+              />
+            </div>
+          </div>
+          <div className="mb-4">
+            <p className="font-bold text-xl text-[#FFC67D] mb-2">Distance</p>
+            <p className="text-2xl font-bold">{distance.toFixed(2)} km</p>
+          </div>
+          <p className="text-sm font-semibold text-gray-400 text-center">
+            {getEncouragement(steps)}
+          </p>
+        </div>
+
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 lg:w-1/2">
+          <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Wallet</h3>
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-gray-400">Total Balance</h4>
+            <p className="text-2xl font-bold">{bfPoints} BF</p>
+          </div>
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-gray-400">Today's Earnings</h4>
+            <p className="text-xl font-bold">{todayPoints} BF</p>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-gray-400">Ethereum Balance</h4>
+            <p className="text-xl font-bold">{ethereumBalance.toFixed(6)} ETH</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg lg:w-3/5 mb-6">
+        <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Today's Stats</h3>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="flex flex-col items-center">
+            <FaFire className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">{caloriesBurned}</p>
+            <p className="text-sm text-gray-400">Calories Burned</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaHeartbeat className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">{heartRate}</p>
+            <p className="text-sm text-gray-400">Avg. Heart Rate</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaDumbbell className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">45 min</p>
+            <p className="text-sm text-gray-400">Workout Time</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg lg:w-3/5">
+        <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Convert BF to ETH</h3>
+        <div className="flex flex-col md:flex-row md:items-end gap-4 mb-4">
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-gray-400 mb-2">BF Amount</p>
+            <input
+              className="w-full bg-gray-900 p-3 rounded-md text-white outline-none"
+              type="number"
+              value={inputValue}
+              onChange={handleInputChange}
+              placeholder="Enter BF amount"
+            />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-gray-400 mb-2">ETH Equivalent</p>
+            <input
+              className="w-full bg-gray-900 p-3 rounded-md text-white outline-none"
+              type="text"
+              value={outputValue}
+              readOnly
+              placeholder="ETH Value"
+            />
+          </div>
+        </div>
+        <div className="flex justify-center gap-4">
+          <button
+            className="bg-[#0097A7] px-4 py-2 rounded-lg font-medium"
+            onClick={handleConversion}
           >
-            <div>
-              <h2 className="text-2xl font-bold">Welcome, [User]</h2>
-              <p className="text-gray-500">
-                Here&apos;s a summary of your recent activity.
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-lg font-semibold">Token Balance: 1200 FCT</p>
-              <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-4">
-                View Wallet
-              </button>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Progress Overview */}
-        <section className="mb-12">
-          <h3 className="text-xl font-bold mb-4">Your Progress</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Progress Card 1 */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-white rounded-lg shadow-md p-6"
-            >
-              <h4 className="text-lg font-bold">Daily Steps</h4>
-              <p>8,500 / 10,000 steps</p>
-              <progress
-                className="w-full h-2 mt-2"
-                value="8500"
-                max="10000"
-              ></progress>
-            </motion.div>
-            {/* Progress Card 2 */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-white rounded-lg shadow-md p-6"
-            >
-              <h4 className="text-lg font-bold">Running Distance</h4>
-              <p>15 km / 20 km</p>
-              <progress
-                className="w-full h-2 mt-2"
-                value="15"
-                max="20"
-              ></progress>
-            </motion.div>
-            {/* Progress Card 3 */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-white rounded-lg shadow-md p-6"
-            >
-              <h4 className="text-lg font-bold">Gym Workouts</h4>
-              <p>3 / 5 sessions</p>
-              <progress
-                className="w-full h-2 mt-2"
-                value="3"
-                max="5"
-              ></progress>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Recent Challenges */}
-        <section>
-          <h3 className="text-xl font-bold mb-4">Recent Challenges</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Challenge Card 1 */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-white rounded-lg shadow-md p-6"
-            >
-              <h4 className="text-lg font-bold">October Step Challenge</h4>
-              <p>Current Rank: 5th / 100</p>
-              <p>End Date: Oct 31, 2024</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                View Details
-              </button>
-            </motion.div>
-            {/* Challenge Card 2 */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-white rounded-lg shadow-md p-6"
-            >
-              <h4 className="text-lg font-bold">10K Run Charity Event</h4>
-              <p>Status: Registered</p>
-              <p>Event Date: Nov 15, 2024</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                View Event
-              </button>
-            </motion.div>
-          </div>
-        </section>
-      </main>
+            Convert
+          </button>
+          <button
+            className="bg-gray-700 px-4 py-2 rounded-lg font-medium"
+            onClick={handleReset}
+          >
+            Reset
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

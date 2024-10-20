@@ -25,6 +25,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Dashboard from "./Dashboard";
 
 const Profile: FC = () => {
   const { address } = useAccount();
@@ -224,26 +225,34 @@ const Profile: FC = () => {
             </div>
           </div>
         );
+
       case "stats":
         return (
-          <section className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <h2 className="text-3xl font-bold text-center mb-8 col-span-full text-white">
-              Fitness Stats
-            </h2>
-            <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
-              <h3 className="text-xl font-bold mb-2">Total Steps</h3>
-              <p className="text-4xl font-bold">120,000</p>
-            </div>
-            <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
-              <h3 className="text-xl font-bold mb-2">Calories Burned</h3>
-              <p className="text-4xl font-bold">45,000 kcal</p>
-            </div>
-            <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
-              <h3 className="text-xl font-bold mb-2">Challenges Completed</h3>
-              <p className="text-4xl font-bold">10</p>
+          <section className="p-6">
+            {/* <div className=" grid grid-cols-1 md:grid-cols-3 gap-6">
+              {" "}
+              <h2 className="text-3xl font-bold text-center mb-8 col-span-full text-white">
+                Fitness Stats
+              </h2>
+              <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
+                <h3 className="text-xl font-bold mb-2">Total Steps</h3>
+                <p className="text-4xl font-bold">120,000</p>
+              </div>
+              <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
+                <h3 className="text-xl font-bold mb-2">Calories Burned</h3>
+                <p className="text-4xl font-bold">45,000 kcal</p>
+              </div>
+              <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
+                <h3 className="text-xl font-bold mb-2">Challenges Completed</h3>
+                <p className="text-4xl font-bold">10</p>
+              </div>
+            </div> */}
+            <div className="">
+              <Dashboard />
             </div>
           </section>
         );
+
       case "achievements":
         return (
           <section className="p-6 bg-gray-900">
