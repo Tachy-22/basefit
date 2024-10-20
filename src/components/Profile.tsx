@@ -15,6 +15,7 @@ import {
   FaHeartbeat,
   FaDumbbell,
   FaCheck,
+  FaAngleDown,
 } from "react-icons/fa";
 import {
   LineChart,
@@ -30,9 +31,7 @@ import Dashboard from "./Dashboard";
 const Profile: FC = () => {
   const { address } = useAccount();
   const [newGoal, setNewGoal] = useState("");
-  const [goals, setGoals] = useState<{ goal: string; completed: boolean }[]>(
-    []
-  );
+  const [goals, setGoals] = useState<{ goal: string; completed: boolean }[]>([]);
   const [points, setPoints] = useState(0);
   const [achievementLevel, setAchievementLevel] = useState(1);
   const [loginStreak, setLoginStreak] = useState(0);
@@ -40,6 +39,7 @@ const Profile: FC = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
 
   // Mock user data
   useEffect(() => {
@@ -223,30 +223,36 @@ const Profile: FC = () => {
                 ))}
               </div>
             </div>
+
+            {/* Achievements Accordion */}
+            <div className="col-span-full bg-gray-800 p-6 rounded-lg shadow-lg">
+              <h3 className="text-2xl font-bold mb-4 text-white flex items-center justify-between cursor-pointer" onClick={() => setShowAchievements(!showAchievements)}>
+                Achievements
+                <FaAngleDown className={`transition-transform ${showAchievements ? "rotate-180" : ""}`} />
+              </h3>
+              {showAchievements && (
+                <div className="mt-4">
+                  <div className="rounded-lg shadow-lg p-4 bg-gray-700">
+                    <h4 className="text-xl font-bold text-white">Marathon Finisher</h4>
+                    <p className="text-gray-400">Completed a full marathon</p>
+                  </div>
+                  <div className="rounded-lg shadow-lg p-4 bg-gray-700 mt-2">
+                    <h4 className="text-xl font-bold text-white">10,000 Steps Streak</h4>
+                    <p className="text-gray-400">Walked 10,000 steps for 30 days straight</p>
+                  </div>
+                  <div className="rounded-lg shadow-lg p-4 bg-gray-700 mt-2">
+                    <h4 className="text-xl font-bold text-white">Weight Loss Champion</h4>
+                    <p className="text-gray-400">Lost 20 pounds in 3 months</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         );
 
       case "stats":
         return (
           <section className="p-6">
-            {/* <div className=" grid grid-cols-1 md:grid-cols-3 gap-6">
-              {" "}
-              <h2 className="text-3xl font-bold text-center mb-8 col-span-full text-white">
-                Fitness Stats
-              </h2>
-              <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
-                <h3 className="text-xl font-bold mb-2">Total Steps</h3>
-                <p className="text-4xl font-bold">120,000</p>
-              </div>
-              <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
-                <h3 className="text-xl font-bold mb-2">Calories Burned</h3>
-                <p className="text-4xl font-bold">45,000 kcal</p>
-              </div>
-              <div className="rounded-lg shadow-lg p-6 bg-gray-800 text-white">
-                <h3 className="text-xl font-bold mb-2">Challenges Completed</h3>
-                <p className="text-4xl font-bold">10</p>
-              </div>
-            </div> */}
             <div className="">
               <Dashboard />
             </div>

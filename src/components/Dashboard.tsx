@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { FaFire, FaHeartbeat, FaDumbbell } from 'react-icons/fa';
+import { FaFire, FaHeartbeat, FaDumbbell, FaRunning, FaSwimmer, FaBicycle, FaAppleAlt, FaWeight } from 'react-icons/fa';
 
 const Dashboard = () => {
   const [steps, setSteps] = useState<number>(3500);
@@ -16,6 +16,8 @@ const Dashboard = () => {
   const [ethereumBalance, setEthereumBalance] = useState<number>(0.003125);
   const [caloriesBurned, setCaloriesBurned] = useState<number>(0);
   const [heartRate, setHeartRate] = useState<number>(70);
+  const [waterIntake, setWaterIntake] = useState<number>(0); // New state for water intake
+  const [weight, setWeight] = useState<number>(70); // New state for weight
   const [progress, setProgress] = useState<number>(0);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +61,7 @@ const Dashboard = () => {
         setTodayPoints(Math.floor(newSteps / 10));
         setCaloriesBurned(Math.floor(newSteps * 0.05));
         setHeartRate(70 + Math.floor(Math.random() * 30));
+        setWaterIntake((prev) => prev + Math.floor(Math.random() * 200)); // Simulate water intake
         return newSteps;
       });
     }, 5000);
@@ -79,7 +82,7 @@ const Dashboard = () => {
 
   return (
     <div className="bg-gray-900 text-white p-6 w-full lg:flex lg:flex-col lg:items-center">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg md:mt-10 lg:w-3/5 mb-6">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full  mb-6">
         <p className="text-sm text-gray-400 font-semibold">
           Push beyond your limits today, because the greatest growth comes from the{" "}
           <button className="text-[#FFC67D] text-semibold underline">
@@ -89,7 +92,53 @@ const Dashboard = () => {
         </p>
       </div>
 
-      <div className="lg:flex lg:gap-6 lg:w-3/5">
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
+        <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Today's Stats</h3>
+        <div className="grid grid-cols-4 gap-4">
+          <div className="flex flex-col items-center">
+            <FaFire className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">{caloriesBurned}</p>
+            <p className="text-sm text-gray-400">Calories Burned</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaHeartbeat className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">{heartRate}</p>
+            <p className="text-sm text-gray-400">Avg. Heart Rate</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaDumbbell className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">45 min</p>
+            <p className="text-sm text-gray-400">Workout Time</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaRunning className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">Running</p>
+            <p className="text-sm text-gray-400">Activity</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaSwimmer className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">30 min</p>
+            <p className="text-sm text-gray-400">Swimming</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaBicycle className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">Cycling</p>
+            <p className="text-sm text-gray-400">Activity</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaAppleAlt className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">{waterIntake} ml</p>
+            <p className="text-sm text-gray-400">Water Intake</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <FaWeight className="text-3xl text-[#FFC67D] mb-2" />
+            <p className="text-lg font-bold">{weight} kg</p>
+            <p className="text-sm text-gray-400">Weight</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="lg:flex lg:gap-6 w-full ">
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 lg:w-1/2">
           <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Daily Progress</h3>
           <div className="flex items-center justify-between mb-4">
@@ -132,28 +181,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg lg:w-3/5 mb-6">
-        <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Today's Stats</h3>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="flex flex-col items-center">
-            <FaFire className="text-3xl text-[#FFC67D] mb-2" />
-            <p className="text-lg font-bold">{caloriesBurned}</p>
-            <p className="text-sm text-gray-400">Calories Burned</p>
-          </div>
-          <div className="flex flex-col items-center">
-            <FaHeartbeat className="text-3xl text-[#FFC67D] mb-2" />
-            <p className="text-lg font-bold">{heartRate}</p>
-            <p className="text-sm text-gray-400">Avg. Heart Rate</p>
-          </div>
-          <div className="flex flex-col items-center">
-            <FaDumbbell className="text-3xl text-[#FFC67D] mb-2" />
-            <p className="text-lg font-bold">45 min</p>
-            <p className="text-sm text-gray-400">Workout Time</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg lg:w-3/5">
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
         <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Convert BF to ETH</h3>
         <div className="flex flex-col md:flex-row md:items-end gap-4 mb-4">
           <div className="flex-1">
