@@ -11,17 +11,11 @@
 // };
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyC8snHCn8yHxnNXLCqAiuFJOEcenbwWPbI",
-
-  authDomain: "basefit-53e3b.firebaseapp.com",
-
-  projectId: "basefit-53e3b",
-
-  storageBucket: "basefit-53e3b.appspot.com",
-
-  messagingSenderId: "1063344493318",
-
-  appId: "1:1063344493318:web:af9f13baa2c0d727440487",
-
-  measurementId: "G-7W0J9GZL7B",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };

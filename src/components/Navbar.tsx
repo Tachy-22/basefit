@@ -7,6 +7,7 @@ import UserAvatar from "./UserAvatar";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useAccount } from "wagmi";
+import UserMenuDropdown from "./UserMenuDropdown";
 
 const AppNavbar = () => {
   const { address, isConnected } = useAccount();
@@ -62,12 +63,16 @@ const AppNavbar = () => {
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
               {/* <NavLink href="/charity">Charity</NavLink> */}
-              <NavLink href="/basefit">Waitlist</NavLink>
+              <NavLink href="/waitlist">Waitlist</NavLink>
             </div>
           </div>
           <div className="hidden lg:block">
             {address ? (
-              <UserAvatar />
+              <div className="flex gap-1 items-center">
+                {" "}
+                <UserMenuDropdown />
+                <UserAvatar />
+              </div>
             ) : (
               <div className="flex items-center gap-3">
                 <SignupButton />
