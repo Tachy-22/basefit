@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { useAccount } from "wagmi";
-import SignupButton from "./SignupButton";
 import LoginButton from "./LoginButton";
+import React, { useEffect, useState } from "react";
+import SignupButton from "./SignupButton";
 import UserAvatar from "./UserAvatar";
+import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { useAccount } from "wagmi";
 
 const AppNavbar = () => {
   const { address, isConnected } = useAccount();
@@ -62,7 +62,7 @@ const AppNavbar = () => {
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
               {/* <NavLink href="/charity">Charity</NavLink> */}
-              {/* <NavLink href="/user">Dashboard</NavLink> */}
+              <NavLink href="/basefit">Waitlist</NavLink>
             </div>
           </div>
           <div className="hidden lg:block">
