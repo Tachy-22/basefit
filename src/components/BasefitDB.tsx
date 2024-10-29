@@ -4,7 +4,7 @@ import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { FaUser, FaEnvelope, FaWallet, FaTwitter, FaEthereum } from "react-icons/fa";
 import { db } from "src/lib/firebase";
 import { useAccount } from "wagmi";
-import { Input, Button, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Input, Button, Card, CardBody, CardHeader, Spinner } from "@nextui-org/react";
 
 const WaitlistForm = () => {
   const { address } = useAccount();
@@ -23,7 +23,7 @@ const WaitlistForm = () => {
   });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isOnWaitlist, setIsOnWaitlist] = useState(false);
+  const [isOnWaitlist, setIsOnWaitlist] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkWaitlist = async () => {
@@ -41,10 +41,15 @@ const WaitlistForm = () => {
           if (!querySnapshot.empty) {
             setIsOnWaitlist(true);
             setMessage("You are already on the waitlist! 🎉");
+          } else {
+            setIsOnWaitlist(false);
           }
         } catch (error) {
           console.error("Error checking waitlist:", error);
+          setIsOnWaitlist(false);
         }
+      } else {
+        setIsOnWaitlist(false);
       }
     };
 
@@ -158,7 +163,11 @@ const WaitlistForm = () => {
           </CardHeader>
 
           <CardBody>
-            {isOnWaitlist ? (
+            {isOnWaitlist === null ? (
+              <div className="flex justify-center items-center p-8">
+                <Spinner size="lg" color="primary" />
+              </div>
+            ) : isOnWaitlist ? (
               <div className="bg-green-500/10 text-green-200 border border-green-500/20 p-8 rounded-2xl text-center">
                 <h3 className="text-2xl font-bold mb-4">You're Already On The Waitlist! 🎉</h3>
                 <p>Thank you for your interest. We'll contact you soon with updates.</p>
