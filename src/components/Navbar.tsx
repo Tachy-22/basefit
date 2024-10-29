@@ -137,6 +137,8 @@ const AppNavbar = () => {
               <NavLink href="/dashboard">Dashboard</NavLink>
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
+              <NavLink href="/waitlist">Waitlist</NavLink>
+
               {/* <NavLink href="/charity">Charity</NavLink>               <NavLink href="/user">Dashboard</NavLink>
                */}
               {address ? (
