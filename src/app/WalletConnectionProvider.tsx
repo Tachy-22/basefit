@@ -48,11 +48,6 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
           console.log("userData from firebase : ", userData);
           // Update Redux store with wallet data
           dispatch(setWallet(userData as unknown as TWalletData));
-          
-          // Navigate to home if on waitlist
-          // if (pathname === "/waitlist") {
-          //   router.push("/");
-          // }
 
         } catch (error) {
           console.error("Error connecting wallet:", error);
@@ -61,8 +56,14 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
           setIsLoading(false);
         }
       } else if (pathname !== "/" && pathname !== "/waitlist") {
-        // Redirect to homepage if not connected and not on homepage or waitlist
-        router.push("/");
+        // Check if there's an auth code in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const authCode = urlParams.get('code');
+        
+        // Only redirect if there's no auth code
+        if (!authCode) {
+          router.push("/");
+        }
       } else {
         // If on homepage or waitlist, allow loading without connection
         setIsLoading(false);

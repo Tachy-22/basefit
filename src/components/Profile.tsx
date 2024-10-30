@@ -36,7 +36,7 @@ const Profile: FC = () => {
   const [achievementLevel, setAchievementLevel] = useState(1);
   const [loginStreak, setLoginStreak] = useState(0);
   const [fitnessCandies, setFitnessCandies] = useState(0);
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState("stats");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);

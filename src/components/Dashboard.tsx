@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+
 import React, { useEffect, useState } from "react";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -131,6 +131,8 @@ const Dashboard = () => {
   const [weight, setWeight] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [errors, setErrors] = useState<string[]>([]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -165,32 +167,58 @@ const Dashboard = () => {
 
   const initializeGoogleFit = async () => {
     try {
-      // First, check if NEXT_PUBLIC_GOOGLE_CLIENT_ID is defined
       if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
         throw new Error('Google Client ID is not defined in environment variables');
       }
 
-      console.log('Initializing Google Fit with Client ID:', process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
-      console.log('Current origin:', window.location.origin);
-
-      // Initialize Google Fit API
-      const auth2 = await (window as any).gapi.auth2.init({
+      // Initialize the client with the new GIS approach
+      const tokenClient = (window as any).google.accounts.oauth2.initTokenClient({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        scope: 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read https://www.googleapis.com/auth/fitness.heart_rate.read',
-        cookiepolicy: 'single_host_origin'
+        scope: 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/userinfo.profile',
+        callback: async (tokenResponse: any) => {
+          if (tokenResponse.access_token) {
+            console.log('Token received:', tokenResponse);
+            setIsAuthenticated(true);
+            
+            // Initialize gapi client
+            await (window as any).gapi.client.init({});
+            
+            // Set the access token
+            (window as any).gapi.client.setToken({
+              access_token: tokenResponse.access_token
+            });
+
+            // Get user info
+            try {
+              const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: {
+                  'Authorization': `Bearer ${tokenResponse.access_token}`
+                }
+              });
+              const userInfoData = await userInfoResponse.json();
+              console.log('User Info:', userInfoData);
+              setUserInfo(userInfoData);
+            } catch (error) {
+              console.error('Error fetching user info:', error);
+              setErrors(prev => [...prev, 'Failed to fetch user info']);
+            }
+
+            // Load the fitness API
+            await (window as any).gapi.client.load('fitness', 'v1');
+            
+            // Now fetch the data
+            fetchFitnessData();
+          }
+        },
       });
 
-      if (auth2.isSignedIn.get()) {
-        setIsAuthenticated(true);
-        fetchFitnessData();
-      } else {
-        console.log('User not signed in');
-        // Optionally, you can add a sign-in button here
-        // auth2.signIn();
-      }
+      // Request the token
+      tokenClient.requestAccessToken();
+
     } catch (error) {
       console.error('Error initializing Google Fit:', error);
       console.error('Full error details:', JSON.stringify(error, null, 2));
+      setErrors(prev => [...prev, 'Failed to initialize Google Fit']);
     }
   };
 
@@ -199,9 +227,6 @@ const Dashboard = () => {
       const today = new Date();
       const startTime = new Date(today.setHours(0, 0, 0, 0)).getTime();
       const endTime = new Date().getTime();
-
-      // Load fitness API
-      await (window as any).gapi.client.load('fitness', 'v1');
 
       // Get steps data
       const stepsResponse = await (window as any).gapi.client.fitness.users.dataset.aggregate({
@@ -214,8 +239,13 @@ const Dashboard = () => {
         endTimeMillis: endTime
       });
 
-      if (stepsResponse.result.bucket[0]?.dataset[0]?.point[0]?.value[0]?.intVal) {
-        const stepsCount = stepsResponse.result.bucket[0].dataset[0].point[0].value[0].intVal;
+      console.log('Steps Response:', stepsResponse);
+
+      // Parse steps data from response
+      const stepsData = JSON.parse(stepsResponse.body);
+      if (stepsData.bucket[0]?.dataset[0]?.point?.length > 0) {
+        const stepsCount = stepsData.bucket[0].dataset[0].point[0].value[0].intVal || 0;
+        console.log('Steps Count:', stepsCount);
         setSteps(stepsCount);
         setBfPoints(Math.floor(stepsCount / 100));
         setTodayPoints(Math.floor(stepsCount / 10));
@@ -235,8 +265,14 @@ const Dashboard = () => {
         endTimeMillis: endTime
       });
 
-      if (heartRateResponse.result.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal) {
-        setHeartRate(Math.round(heartRateResponse.result.bucket[0].dataset[0].point[0].value[0].fpVal));
+      console.log('Heart Rate Response:', heartRateResponse);
+
+      // Parse heart rate data from response
+      const heartRateData = JSON.parse(heartRateResponse.body);
+      if (heartRateData.bucket[0]?.dataset[0]?.point?.length > 0) {
+        const heartRateValue = Math.round(heartRateData.bucket[0].dataset[0].point[0].value[0].fpVal) || 0;
+        console.log('Heart Rate:', heartRateValue);
+        setHeartRate(heartRateValue);
       }
 
       // Get weight data
@@ -250,26 +286,65 @@ const Dashboard = () => {
         endTimeMillis: endTime
       });
 
-      if (weightResponse.result.bucket[0]?.dataset[0]?.point[0]?.value[0]?.fpVal) {
-        setWeight(Math.round(weightResponse.result.bucket[0].dataset[0].point[0].value[0].fpVal));
+      console.log('Weight Response:', weightResponse);
+
+      // Parse weight data from response
+      const weightData = JSON.parse(weightResponse.body);
+      if (weightData.bucket[0]?.dataset[0]?.point?.length > 0) {
+        const weightValue = Math.round(weightData.bucket[0].dataset[0].point[0].value[0].fpVal) || 0;
+        console.log('Weight:', weightValue);
+        setWeight(weightValue);
       }
 
     } catch (error) {
       console.error('Error fetching fitness data:', error);
+      setErrors(prev => [...prev, 'Failed to fetch fitness data']);
     }
   };
 
   useEffect(() => {
-    // Load Google API Client Library
-    const script = document.createElement('script');
-    script.src = 'https://apis.google.com/js/api.js';
-    script.onload = () => {
-      (window as any).gapi.load('client:auth2', initializeGoogleFit);
+    const loadScripts = async () => {
+      try {
+        // Load GSI script first
+        await new Promise<void>((resolve) => {
+          const gsiScript = document.createElement('script');
+          gsiScript.src = 'https://accounts.google.com/gsi/client';
+          gsiScript.id = 'google-gsi-script';
+          gsiScript.onload = () => resolve();
+          document.body.appendChild(gsiScript);
+        });
+
+        // Then load GAPI script
+        await new Promise<void>((resolve) => {
+          const gapiScript = document.createElement('script');
+          gapiScript.src = 'https://apis.google.com/js/api.js';
+          gapiScript.id = 'google-gapi-script';
+          gapiScript.onload = () => {
+            (window as any).gapi.load('client', () => resolve());
+          };
+          document.body.appendChild(gapiScript);
+        });
+
+        // Initialize after both scripts are loaded
+        initializeGoogleFit();
+      } catch (error) {
+        console.error('Error loading scripts:', error);
+        setErrors(prev => [...prev, 'Failed to load Google scripts']);
+      }
     };
-    document.body.appendChild(script);
+
+    loadScripts();
 
     return () => {
-      document.body.removeChild(script);
+      const gapiScript = document.getElementById('google-gapi-script');
+      const gsiScript = document.getElementById('google-gsi-script');
+
+      if (gapiScript?.parentNode) {
+        gapiScript.parentNode.removeChild(gapiScript);
+      }
+      if (gsiScript?.parentNode) {
+        gsiScript.parentNode.removeChild(gsiScript);
+      }
     };
   }, []);
 
@@ -283,6 +358,32 @@ const Dashboard = () => {
 
   return (
     <div className="bg-gray-900 text-white p-6 w-full lg:flex lg:flex-col lg:items-center">
+      {userInfo && (
+        <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
+          <h3 className="font-bold text-xl text-[#FFC67D] mb-4">User Profile</h3>
+          <div className="flex items-center gap-4">
+            {userInfo.picture && (
+              <img src={userInfo.picture} alt="Profile" className="w-16 h-16 rounded-full" />
+            )}
+            <div>
+              <p className="font-bold">{userInfo.name}</p>
+              <p className="text-gray-400">{userInfo.email}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {errors.length > 0 && (
+        <div className="bg-red-900 p-4 rounded-lg shadow-lg w-full mb-6">
+          <h3 className="font-bold text-xl text-red-400 mb-2">Errors</h3>
+          <ul className="list-disc pl-4">
+            {errors.map((error, index) => (
+              <li key={index} className="text-red-200">{error}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
         <p className="text-sm text-gray-400 font-semibold">
           Push beyond your limits today, because the greatest growth comes from the{" "}
