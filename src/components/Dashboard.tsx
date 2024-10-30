@@ -1,10 +1,12 @@
-"use client";
+// Import necessary dependencies and components
+"use client"; // Marks this as a client-side component
 
 import React, { useEffect, useState } from "react";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { FaFire, FaHeartbeat, FaDumbbell, FaRunning, FaSwimmer, FaBicycle, FaAppleAlt, FaWeight } from 'react-icons/fa';
 
+// StatCard component - Displays individual statistics with an icon, value and label
 const StatCard = ({ icon: Icon, value, label }: { icon: any, value: string | number, label: string }) => (
   <div className="flex flex-col items-center">
     <Icon className="text-3xl text-[#FFC67D] mb-2" />
@@ -13,6 +15,7 @@ const StatCard = ({ icon: Icon, value, label }: { icon: any, value: string | num
   </div>
 );
 
+// ProgressCard component - Shows daily progress including steps, circular progress bar and distance
 const ProgressCard = ({ steps, progress, distance, dailyGoal, getEncouragement }: { 
   steps: number, 
   progress: number, 
@@ -46,6 +49,7 @@ const ProgressCard = ({ steps, progress, distance, dailyGoal, getEncouragement }
   </div>
 );
 
+// WalletCard component - Displays cryptocurrency wallet information
 const WalletCard = ({ bfPoints, todayPoints, ethereumBalance }: {
   bfPoints: number,
   todayPoints: number,
@@ -68,6 +72,7 @@ const WalletCard = ({ bfPoints, todayPoints, ethereumBalance }: {
   </div>
 );
 
+// ConversionCard component - Handles conversion between BF and ETH tokens
 const ConversionCard = ({ inputValue, outputValue, handleInputChange, handleConversion, handleReset }: {
   inputValue: string,
   outputValue: string,
@@ -116,7 +121,9 @@ const ConversionCard = ({ inputValue, outputValue, handleInputChange, handleConv
   </div>
 );
 
+// Main Dashboard component
 const Dashboard = () => {
+  // State declarations for various fitness and wallet metrics
   const [steps, setSteps] = useState<number>(0);
   const [distance, setDistance] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string>("");
@@ -133,7 +140,9 @@ const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [errors, setErrors] = useState<string[]>([]);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
+  // Handlers for conversion functionality
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
@@ -157,6 +166,7 @@ const Dashboard = () => {
     setOutputValue("");
   };
 
+  // Helper function to generate encouragement messages
   const getEncouragement = (steps: number): string => {
     if (steps < dailyGoal) {
       return `Keep going! You're ${dailyGoal - steps} steps away from your daily goal.`;
@@ -165,30 +175,64 @@ const Dashboard = () => {
     }
   };
 
+  // Check if user is already authenticated
+  const checkAuthStatus = () => {
+    const savedToken = localStorage.getItem('googleAccessToken');
+    console.log('Checking saved token:', savedToken);
+    if (savedToken) {
+      setAccessToken(savedToken);
+      setIsAuthenticated(true);
+      return true;
+    }
+    return false;
+  };
+
+  // Handle sign out
+  const handleSignOut = () => {
+    localStorage.removeItem('googleAccessToken');
+    localStorage.removeItem('userInfo');
+    setAccessToken(null);
+    setIsAuthenticated(false);
+    setUserInfo(null);
+    window.location.reload(); // Refresh to reset state
+  };
+
+  // Google Fit initialization function
   const initializeGoogleFit = async () => {
     try {
+      // Check if already authenticated
+      if (checkAuthStatus()) {
+        console.log('User already authenticated, fetching data...');
+        await fetchFitnessData();
+        return;
+      }
+
       if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
         throw new Error('Google Client ID is not defined in environment variables');
       }
 
-      // Initialize the client with the new GIS approach
+      console.log('Initializing Google Fit...');
+
+      // Initialize Google Identity Services client
       const tokenClient = (window as any).google.accounts.oauth2.initTokenClient({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
         scope: 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/userinfo.profile',
         callback: async (tokenResponse: any) => {
           if (tokenResponse.access_token) {
-            console.log('Token received:', tokenResponse);
+            console.log('New token received:', tokenResponse);
+            setAccessToken(tokenResponse.access_token);
+            localStorage.setItem('googleAccessToken', tokenResponse.access_token);
             setIsAuthenticated(true);
             
-            // Initialize gapi client
+            // Initialize Google API client
             await (window as any).gapi.client.init({});
             
-            // Set the access token
+            // Set access token
             (window as any).gapi.client.setToken({
               access_token: tokenResponse.access_token
             });
 
-            // Get user info
+            // Fetch user information
             try {
               const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
                 headers: {
@@ -198,21 +242,22 @@ const Dashboard = () => {
               const userInfoData = await userInfoResponse.json();
               console.log('User Info:', userInfoData);
               setUserInfo(userInfoData);
+              localStorage.setItem('userInfo', JSON.stringify(userInfoData));
             } catch (error) {
               console.error('Error fetching user info:', error);
               setErrors(prev => [...prev, 'Failed to fetch user info']);
             }
 
-            // Load the fitness API
+            // Load Google Fitness API
             await (window as any).gapi.client.load('fitness', 'v1');
             
-            // Now fetch the data
+            // Fetch fitness data
             fetchFitnessData();
           }
         },
       });
 
-      // Request the token
+      // Request access token
       tokenClient.requestAccessToken();
 
     } catch (error) {
@@ -222,13 +267,15 @@ const Dashboard = () => {
     }
   };
 
+  // Function to fetch fitness data from Google Fit
   const fetchFitnessData = async () => {
     try {
+      console.log('Fetching fitness data...');
       const today = new Date();
       const startTime = new Date(today.setHours(0, 0, 0, 0)).getTime();
       const endTime = new Date().getTime();
 
-      // Get steps data
+      // Fetch steps data
       const stepsResponse = await (window as any).gapi.client.fitness.users.dataset.aggregate({
         userId: 'me',
         aggregateBy: [{
@@ -241,7 +288,7 @@ const Dashboard = () => {
 
       console.log('Steps Response:', stepsResponse);
 
-      // Parse steps data from response
+      // Process steps data
       const stepsData = JSON.parse(stepsResponse.body);
       if (stepsData.bucket[0]?.dataset[0]?.point?.length > 0) {
         const stepsCount = stepsData.bucket[0].dataset[0].point[0].value[0].intVal || 0;
@@ -254,7 +301,7 @@ const Dashboard = () => {
         setProgress((stepsCount / dailyGoal) * 100);
       }
 
-      // Get heart rate data
+      // Fetch heart rate data
       const heartRateResponse = await (window as any).gapi.client.fitness.users.dataset.aggregate({
         userId: 'me',
         aggregateBy: [{
@@ -267,7 +314,7 @@ const Dashboard = () => {
 
       console.log('Heart Rate Response:', heartRateResponse);
 
-      // Parse heart rate data from response
+      // Process heart rate data
       const heartRateData = JSON.parse(heartRateResponse.body);
       if (heartRateData.bucket[0]?.dataset[0]?.point?.length > 0) {
         const heartRateValue = Math.round(heartRateData.bucket[0].dataset[0].point[0].value[0].fpVal) || 0;
@@ -275,7 +322,7 @@ const Dashboard = () => {
         setHeartRate(heartRateValue);
       }
 
-      // Get weight data
+      // Fetch weight data
       const weightResponse = await (window as any).gapi.client.fitness.users.dataset.aggregate({
         userId: 'me',
         aggregateBy: [{
@@ -288,7 +335,7 @@ const Dashboard = () => {
 
       console.log('Weight Response:', weightResponse);
 
-      // Parse weight data from response
+      // Process weight data
       const weightData = JSON.parse(weightResponse.body);
       if (weightData.bucket[0]?.dataset[0]?.point?.length > 0) {
         const weightValue = Math.round(weightData.bucket[0].dataset[0].point[0].value[0].fpVal) || 0;
@@ -302,10 +349,12 @@ const Dashboard = () => {
     }
   };
 
+  // Effect hook to load Google scripts and initialize Google Fit
   useEffect(() => {
+    console.log('Loading Google scripts...');
     const loadScripts = async () => {
       try {
-        // Load GSI script first
+        // Load Google Identity Services script
         await new Promise<void>((resolve) => {
           const gsiScript = document.createElement('script');
           gsiScript.src = 'https://accounts.google.com/gsi/client';
@@ -314,7 +363,7 @@ const Dashboard = () => {
           document.body.appendChild(gsiScript);
         });
 
-        // Then load GAPI script
+        // Load Google API script
         await new Promise<void>((resolve) => {
           const gapiScript = document.createElement('script');
           gapiScript.src = 'https://apis.google.com/js/api.js';
@@ -325,8 +374,15 @@ const Dashboard = () => {
           document.body.appendChild(gapiScript);
         });
 
-        // Initialize after both scripts are loaded
-        initializeGoogleFit();
+        // Check for saved user info
+        const savedUserInfo = localStorage.getItem('userInfo');
+        if (savedUserInfo) {
+          setUserInfo(JSON.parse(savedUserInfo));
+        }
+
+        // Check auth status but don't initialize Google Fit automatically
+        checkAuthStatus();
+
       } catch (error) {
         console.error('Error loading scripts:', error);
         setErrors(prev => [...prev, 'Failed to load Google scripts']);
@@ -335,6 +391,7 @@ const Dashboard = () => {
 
     loadScripts();
 
+    // Cleanup function to remove scripts
     return () => {
       const gapiScript = document.getElementById('google-gapi-script');
       const gsiScript = document.getElementById('google-gsi-script');
@@ -348,88 +405,127 @@ const Dashboard = () => {
     };
   }, []);
 
+  // Effect hook to periodically fetch fitness data
   useEffect(() => {
     if (isAuthenticated) {
+      console.log('Setting up periodic data fetch...');
+      fetchFitnessData(); // Initial fetch when authenticated
       // Fetch data every 5 minutes
       const interval = setInterval(fetchFitnessData, 300000);
       return () => clearInterval(interval);
     }
   }, [isAuthenticated]);
 
+  console.log('Current user info:', userInfo);
+  console.log('Authentication status:', isAuthenticated);
+
+  // Render the dashboard
   return (
     <div className="bg-gray-900 text-white p-6 w-full lg:flex lg:flex-col lg:items-center">
-      {userInfo && (
-        <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
-          <h3 className="font-bold text-xl text-[#FFC67D] mb-4">User Profile</h3>
-          <div className="flex items-center gap-4">
-            {userInfo.picture && (
-              <img src={userInfo.picture} alt="Profile" className="w-16 h-16 rounded-full" />
-            )}
-            <div>
-              <p className="font-bold">{userInfo.name}</p>
-              <p className="text-gray-400">{userInfo.email}</p>
+      {!isAuthenticated ? (
+        <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6 flex justify-center">
+          <button
+            onClick={() => initializeGoogleFit()}
+            className="bg-[#4285F4] text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"
+          >
+            <img 
+              src="https://developers.google.com/identity/images/g-logo.png" 
+              alt="Google Logo" 
+              className="w-6 h-6 bg-white p-1 rounded-full"
+            />
+            Sign in with Google
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* User Profile Section */}
+          {userInfo && (
+            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-xl text-[#FFC67D]">User Profile</h3>
+                <button
+                  onClick={handleSignOut}
+                  className="bg-red-600 px-4 py-2 rounded-lg font-medium"
+                >
+                  Sign Out
+                </button>
+              </div>
+              <div className="flex items-center gap-4">
+                {userInfo.picture && (
+                  <img src={userInfo.picture} alt="Profile" className="w-16 h-16 rounded-full bg-gray-400" />
+                )}
+                <div>
+                  <p className="font-bold">{userInfo.name}</p>
+                  <p className="text-gray-400">{userInfo.email}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Error Display Section */}
+          {errors.length > 0 && (
+            <div className="bg-red-900 p-4 rounded-lg shadow-lg w-full mb-6">
+              <h3 className="font-bold text-xl text-red-400 mb-2">Errors</h3>
+              <ul className="list-disc pl-4">
+                {errors.map((error, index) => (
+                  <li key={index} className="text-red-200">{error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Motivational Message Section */}
+          <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
+            <p className="text-sm text-gray-400 font-semibold">
+              Push beyond your limits today, because the greatest growth comes from the{" "}
+              <button className="text-[#FFC67D] text-semibold underline">
+                challenges
+              </button>{" "}
+              you dare to face.
+            </p>
+          </div>
+
+          {/* Statistics Grid Section */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
+            <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Today's Stats</h3>
+            <div className="grid grid-cols-4 gap-4">
+              <StatCard icon={FaFire} value={caloriesBurned} label="Calories Burned" />
+              <StatCard icon={FaHeartbeat} value={heartRate} label="Avg. Heart Rate" />
+              <StatCard icon={FaDumbbell} value="45 min" label="Workout Time" />
+              <StatCard icon={FaRunning} value="Running" label="Activity" />
+              <StatCard icon={FaSwimmer} value="30 min" label="Swimming" />
+              <StatCard icon={FaBicycle} value="Cycling" label="Activity" />
+              <StatCard icon={FaAppleAlt} value={`${waterIntake} ml`} label="Water Intake" />
+              <StatCard icon={FaWeight} value={`${weight} kg`} label="Weight" />
             </div>
           </div>
-        </div>
+
+          {/* Progress and Wallet Section */}
+          <div className="lg:flex lg:gap-6 w-full">
+            <ProgressCard 
+              steps={steps}
+              progress={progress}
+              distance={distance}
+              dailyGoal={dailyGoal}
+              getEncouragement={getEncouragement}
+            />
+            <WalletCard 
+              bfPoints={bfPoints}
+              todayPoints={todayPoints}
+              ethereumBalance={ethereumBalance}
+            />
+          </div>
+
+          {/* Conversion Section */}
+          <ConversionCard
+            inputValue={inputValue}
+            outputValue={outputValue}
+            handleInputChange={handleInputChange}
+            handleConversion={handleConversion}
+            handleReset={handleReset}
+          />
+        </>
       )}
-
-      {errors.length > 0 && (
-        <div className="bg-red-900 p-4 rounded-lg shadow-lg w-full mb-6">
-          <h3 className="font-bold text-xl text-red-400 mb-2">Errors</h3>
-          <ul className="list-disc pl-4">
-            {errors.map((error, index) => (
-              <li key={index} className="text-red-200">{error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
-        <p className="text-sm text-gray-400 font-semibold">
-          Push beyond your limits today, because the greatest growth comes from the{" "}
-          <button className="text-[#FFC67D] text-semibold underline">
-            challenges
-          </button>{" "}
-          you dare to face.
-        </p>
-      </div>
-
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
-        <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Today's Stats</h3>
-        <div className="grid grid-cols-4 gap-4">
-          <StatCard icon={FaFire} value={caloriesBurned} label="Calories Burned" />
-          <StatCard icon={FaHeartbeat} value={heartRate} label="Avg. Heart Rate" />
-          <StatCard icon={FaDumbbell} value="45 min" label="Workout Time" />
-          <StatCard icon={FaRunning} value="Running" label="Activity" />
-          <StatCard icon={FaSwimmer} value="30 min" label="Swimming" />
-          <StatCard icon={FaBicycle} value="Cycling" label="Activity" />
-          <StatCard icon={FaAppleAlt} value={`${waterIntake} ml`} label="Water Intake" />
-          <StatCard icon={FaWeight} value={`${weight} kg`} label="Weight" />
-        </div>
-      </div>
-
-      <div className="lg:flex lg:gap-6 w-full">
-        <ProgressCard 
-          steps={steps}
-          progress={progress}
-          distance={distance}
-          dailyGoal={dailyGoal}
-          getEncouragement={getEncouragement}
-        />
-        <WalletCard 
-          bfPoints={bfPoints}
-          todayPoints={todayPoints}
-          ethereumBalance={ethereumBalance}
-        />
-      </div>
-
-      <ConversionCard
-        inputValue={inputValue}
-        outputValue={outputValue}
-        handleInputChange={handleInputChange}
-        handleConversion={handleConversion}
-        handleReset={handleReset}
-      />
     </div>
   );
 };
