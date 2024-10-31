@@ -55,40 +55,54 @@ const AppNavbar = () => {
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold text-coral-200">
               <div className="flex items-center gap-2">
-                <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" className="text-coral-200">
+                <svg
+                  width="30"
+                  height="30"
+                  viewBox="0 0 30 30"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-transparent"
+                >
                   <motion.path
                     fill="none"
-                    stroke="currentColor"
+                    stroke="url(#logoGradient)"
                     strokeWidth="2"
                     strokeLinecap="round"
-                    d="M15 2C8.373 2 3 7.373 3 14s5.373 12 12 12 12-5.373 12-12S21.627 2 15 2"
+                    d="M15 5a10 10 0 1 0 0 20 10 10 0 0 0 0-20"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
                     transition={{ duration: 2, ease: "easeInOut" }}
                   />
-                  <motion.path 
-                    fill="none"
-                    stroke="currentColor"
+                  <motion.path
+                    fill="none" 
+                    stroke="url(#logoGradient)"
                     strokeWidth="2"
                     strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14 6v2h2V7h2v1h1v2h-1v6h1v2h-1v1h-2v-1h-2v1h-2v-1H11v-2h1v-6h-1V8h1V7h2v-1"
+                    d="M10 15h10M15 10v10"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
                     transition={{ duration: 2, delay: 1, ease: "easeInOut" }}
                   />
                   <motion.path
-                    fill="none" 
-                    stroke="currentColor"
+                    fill="none"
+                    stroke="url(#logoGradient)" 
                     strokeWidth="2"
                     strokeLinecap="round"
-                    d="M15 11a3 3 0 0 1 0 6 3 3 0 0 1 0-6"
+                    d="M12 12l6 6M18 12l-6 6"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
                     transition={{ duration: 2, delay: 2, ease: "easeInOut" }}
                   />
+                  <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style={{ stopColor: "#67e8f9" }} />
+                      <stop offset="50%" style={{ stopColor: "#a855f7" }} />
+                      <stop offset="100%" style={{ stopColor: "#ec4899" }} />
+                    </linearGradient>
+                  </defs>
                 </svg>
-             BaseFit
+                <h1 className="relative font-bold text-center bg-gradient-to-r from-cyan-300 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  BaseFit
+                </h1>{" "}
               </div>
             </Link>
           </div>

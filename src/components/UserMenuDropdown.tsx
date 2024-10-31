@@ -25,7 +25,7 @@ export default function UserMenuDropdown() {
           console.log("logout");
           break;
         case "profile":
-          router.push(`/${pathname.split("/")[1]}/profile`);
+          router.push(`/${pathname?.split("/")[1]}/profile`);
           break;
         default:
           break;
