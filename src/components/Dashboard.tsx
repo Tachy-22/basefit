@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { FaFire, FaHeartbeat, FaDumbbell, FaRunning, FaSwimmer, FaBicycle, FaAppleAlt, FaWeight } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // StatCard component - Displays individual statistics with an icon, value and label
 const StatCard = ({ icon: Icon, value, label }: { icon: any, value: string | number, label: string }) => (
@@ -15,7 +17,7 @@ const StatCard = ({ icon: Icon, value, label }: { icon: any, value: string | num
   </div>
 );
 
-// ProgressCard component - Shows daily progress including steps, circular progress bar and distance
+// ProgressCard component - Shows daily progress including steps, circular progress bar and distance err
 const ProgressCard = ({ steps, progress, distance, dailyGoal, getEncouragement }: { 
   steps: number, 
   progress: number, 
@@ -141,6 +143,8 @@ const Dashboard = () => {
   const [userInfo, setUserInfo] = useState<any>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [lastUpdateTime, setLastUpdateTime] = useState<number>(Date.now());
+  const POLLING_INTERVAL = 30000; // 30 seconds
 
   // Handlers for conversion functionality
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -225,7 +229,14 @@ const Dashboard = () => {
             setIsAuthenticated(true);
             
             // Initialize Google API client
-            await (window as any).gapi.client.init({});
+            await (window as any).gapi.client.init({
+              apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+              discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/fitness/v1/rest'],
+              clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+            });
+            
+            // Load the fitness API
+            await (window as any).gapi.client.load('fitness', 'v1');
             
             // Set access token
             (window as any).gapi.client.setToken({
@@ -247,9 +258,6 @@ const Dashboard = () => {
               console.error('Error fetching user info:', error);
               setErrors(prev => [...prev, 'Failed to fetch user info']);
             }
-
-            // Load Google Fitness API
-            await (window as any).gapi.client.load('fitness', 'v1');
             
             // Fetch fitness data
             fetchFitnessData();
@@ -267,13 +275,42 @@ const Dashboard = () => {
     }
   };
 
-  // Function to fetch fitness data from Google Fit
-  const fetchFitnessData = async () => {
+  // Function to subscribe to Google Fit data changes
+  const subscribeToFitnessUpdates = async () => {
     try {
+      const response = await (window as any).gapi.client.fitness.users.dataSources.subscribe({
+        userId: 'me',
+        dataSourceId: 'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps',
+        subscription: {
+          dataTypeName: 'com.google.step_count.delta'
+        }
+      });
+      
+      console.log('Subscription successful:', response);
+    } catch (error) {
+      console.error('Error subscribing to updates:', error);
+      setErrors(prev => [...prev, 'Failed to subscribe to fitness updates']);
+    }
+  };
+
+  // Modified fetchFitnessData to check for recent changes
+  const fetchFitnessData = async (force: boolean = false) => {
+    try {
+      const now = Date.now();
+      // Only fetch if forced or if more than polling interval has passed
+      if (!force && (now - lastUpdateTime) < POLLING_INTERVAL) {
+        return;
+      }
+
+      // Check if fitness API is loaded
+      if (!(window as any).gapi.client.fitness) {
+        await (window as any).gapi.client.load('fitness', 'v1');
+      }
+
       console.log('Fetching fitness data...');
       const today = new Date();
       const startTime = new Date(today.setHours(0, 0, 0, 0)).getTime();
-      const endTime = new Date().getTime();
+      const endTime = now;
 
       // Fetch steps data
       const stepsResponse = await (window as any).gapi.client.fitness.users.dataset.aggregate({
@@ -286,19 +323,18 @@ const Dashboard = () => {
         endTimeMillis: endTime
       });
 
-      console.log('Steps Response:', stepsResponse);
-
       // Process steps data
       const stepsData = JSON.parse(stepsResponse.body);
       if (stepsData.bucket[0]?.dataset[0]?.point?.length > 0) {
         const stepsCount = stepsData.bucket[0].dataset[0].point[0].value[0].intVal || 0;
-        console.log('Steps Count:', stepsCount);
-        setSteps(stepsCount);
-        setBfPoints(Math.floor(stepsCount / 100));
-        setTodayPoints(Math.floor(stepsCount / 10));
-        setDistance(stepsCount * 0.0008);
-        setCaloriesBurned(Math.floor(stepsCount * 0.05));
-        setProgress((stepsCount / dailyGoal) * 100);
+        if (stepsCount !== steps) { // Only update if steps count has changed
+          setSteps(stepsCount);
+          setBfPoints(Math.floor(stepsCount / 100));
+          setTodayPoints(Math.floor(stepsCount / 10));
+          setDistance(stepsCount * 0.0008);
+          setCaloriesBurned(Math.floor(stepsCount * 0.05));
+          setProgress((stepsCount / dailyGoal) * 100);
+        }
       }
 
       // Fetch heart rate data
@@ -312,14 +348,13 @@ const Dashboard = () => {
         endTimeMillis: endTime
       });
 
-      console.log('Heart Rate Response:', heartRateResponse);
-
       // Process heart rate data
       const heartRateData = JSON.parse(heartRateResponse.body);
       if (heartRateData.bucket[0]?.dataset[0]?.point?.length > 0) {
         const heartRateValue = Math.round(heartRateData.bucket[0].dataset[0].point[0].value[0].fpVal) || 0;
-        console.log('Heart Rate:', heartRateValue);
-        setHeartRate(heartRateValue);
+        if (heartRateValue !== heartRate) { // Only update if heart rate has changed
+          setHeartRate(heartRateValue);
+        }
       }
 
       // Fetch weight data
@@ -333,21 +368,57 @@ const Dashboard = () => {
         endTimeMillis: endTime
       });
 
-      console.log('Weight Response:', weightResponse);
-
       // Process weight data
       const weightData = JSON.parse(weightResponse.body);
       if (weightData.bucket[0]?.dataset[0]?.point?.length > 0) {
         const weightValue = Math.round(weightData.bucket[0].dataset[0].point[0].value[0].fpVal) || 0;
-        console.log('Weight:', weightValue);
-        setWeight(weightValue);
+        if (weightValue !== weight) { // Only update if weight has changed
+          setWeight(weightValue);
+        }
       }
 
+      setLastUpdateTime(now);
     } catch (error) {
       console.error('Error fetching fitness data:', error);
       setErrors(prev => [...prev, 'Failed to fetch fitness data']);
     }
   };
+
+  // Effect hook to set up subscription and polling
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Set up initial subscription
+      subscribeToFitnessUpdates();
+      
+      // Fetch initial data
+      fetchFitnessData(true);
+
+      // Set up polling interval as backup
+      const pollingInterval = setInterval(() => {
+        fetchFitnessData();
+      }, POLLING_INTERVAL);
+
+      // Cleanup function
+      return () => {
+        clearInterval(pollingInterval);
+      };
+    }
+  }, [isAuthenticated]);
+
+  // Add a manual refresh button for user-triggered updates
+  const handleManualRefresh = async () => {
+    await fetchFitnessData(true);
+  };
+
+  // Add this to your JSX where appropriate
+  const RefreshButton = () => (
+    <button
+      onClick={handleManualRefresh}
+      className="bg-[#0097A7] px-4 py-2 rounded-lg font-medium"
+    >
+      Refresh Data
+    </button>
+  );
 
   // Effect hook to load Google scripts and initialize Google Fit
   useEffect(() => {
@@ -405,17 +476,6 @@ const Dashboard = () => {
     };
   }, []);
 
-  // Effect hook to periodically fetch fitness data
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log('Setting up periodic data fetch...');
-      fetchFitnessData(); // Initial fetch when authenticated
-      // Fetch data every 5 minutes
-      const interval = setInterval(fetchFitnessData, 300000);
-      return () => clearInterval(interval);
-    }
-  }, [isAuthenticated]);
-
   console.log('Current user info:', userInfo);
   console.log('Authentication status:', isAuthenticated);
 
@@ -463,7 +523,7 @@ const Dashboard = () => {
           )}
 
           {/* Error Display Section */}
-          {errors.length > 0 && (
+          {/* {errors.length > 0 && (
             <div className="bg-red-900 p-4 rounded-lg shadow-lg w-full mb-6">
               <h3 className="font-bold text-xl text-red-400 mb-2">Errors</h3>
               <ul className="list-disc pl-4">
@@ -472,7 +532,7 @@ const Dashboard = () => {
                 ))}
               </ul>
             </div>
-          )}
+          )} */}
 
           {/* Motivational Message Section */}
           <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
@@ -524,8 +584,12 @@ const Dashboard = () => {
             handleConversion={handleConversion}
             handleReset={handleReset}
           />
+
+          {/* Refresh Button */}
+          <RefreshButton />
         </>
       )}
+      <ToastContainer />
     </div>
   );
 };

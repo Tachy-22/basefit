@@ -54,7 +54,42 @@ const AppNavbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold text-coral-200">
-              BaseFit
+              <div className="flex items-center gap-2">
+                <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" className="text-coral-200">
+                  <motion.path
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    d="M15 2C8.373 2 3 7.373 3 14s5.373 12 12 12 12-5.373 12-12S21.627 2 15 2"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2, ease: "easeInOut" }}
+                  />
+                  <motion.path 
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M14 6v2h2V7h2v1h1v2h-1v6h1v2h-1v1h-2v-1h-2v1h-2v-1H11v-2h1v-6h-1V8h1V7h2v-1"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2, delay: 1, ease: "easeInOut" }}
+                  />
+                  <motion.path
+                    fill="none" 
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    d="M15 11a3 3 0 0 1 0 6 3 3 0 0 1 0-6"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2, delay: 2, ease: "easeInOut" }}
+                  />
+                </svg>
+             BaseFit
+              </div>
             </Link>
           </div>
           <div className="hidden lg:block">
