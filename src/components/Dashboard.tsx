@@ -13,9 +13,28 @@ import {
   FaBicycle,
   FaAppleAlt,
   FaWeight,
+  FaSpinner,
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+} from "recharts";
+import { motion } from "framer-motion";
+import { IoMdRefresh } from "react-icons/io";
+import { RiExchangeLine } from "react-icons/ri";
+import { BiWallet } from "react-icons/bi";
+import { Icon } from "next/dist/lib/metadata/types/metadata-types";
+import { IconType } from "react-icons";
 
 // StatCard component - Displays individual statistics with an icon, value and label
 const StatCard = ({
@@ -48,10 +67,19 @@ const ProgressCard = ({
   dailyGoal: number;
   getEncouragement: (steps: number) => string;
 }) => (
-  <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 lg:w-1/2">
-    <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Daily Progress</h3>
+  <motion.div
+    initial={{ opacity: 0, x: -20 }}
+    animate={{ opacity: 1, x: 0 }}
+    className="bg-gray-800/50 backdrop-blur-lg p-6 rounded-xl border border-gray-700/50 mb-6 lg:w-1/2"
+  >
+    <h3 className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-[#FFC67D] to-[#FF9B44] mb-4">
+      Daily Progress
+    </h3>
     <div className="flex items-center justify-between mb-4">
-      <p className="text-2xl font-bold">{steps} steps</p>
+      <div>
+        <p className="text-3xl font-bold">{steps.toLocaleString()}</p>
+        <p className="text-sm text-gray-400">steps today</p>
+      </div>
       <div className="w-24 h-24">
         <CircularProgressbar
           value={progress}
@@ -59,19 +87,23 @@ const ProgressCard = ({
           styles={buildStyles({
             textColor: "#FFC67D",
             pathColor: "#FFC67D",
-            trailColor: "#374151",
+            trailColor: "rgba(55, 65, 81, 0.3)",
+            textSize: "20px",
           })}
         />
       </div>
     </div>
-    <div className="mb-4">
-      <p className="font-bold text-xl text-[#FFC67D] mb-2">Distance</p>
+    <motion.div 
+      className="mb-4 p-4 bg-gray-900/50 rounded-lg"
+      whileHover={{ scale: 1.02 }}
+    >
+      <p className="font-bold text-xl text-[#FFC67D] mb-2">Distance Covered</p>
       <p className="text-2xl font-bold">{distance.toFixed(2)} km</p>
-    </div>
+    </motion.div>
     <p className="text-sm font-semibold text-gray-400 text-center">
       {getEncouragement(steps)}
     </p>
-  </div>
+  </motion.div>
 );
 
 // WalletCard component - Displays cryptocurrency wallet information
@@ -84,21 +116,44 @@ const WalletCard = ({
   todayPoints: number;
   ethereumBalance: number;
 }) => (
-  <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 lg:w-1/2">
-    <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Wallet</h3>
-    <div className="mb-4">
-      <h4 className="text-sm font-semibold text-gray-400">Total Balance</h4>
-      <p className="text-2xl font-bold">{bfPoints} BF</p>
+  <motion.div
+    initial={{ opacity: 0, x: 20 }}
+    animate={{ opacity: 1, x: 0 }}
+    className="bg-gray-800/50 backdrop-blur-lg p-6 rounded-xl border border-gray-700/50 mb-6 lg:w-1/2"
+  >
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-[#FFC67D] to-[#FF9B44]">
+        Crypto Wallet
+      </h3>
+      <BiWallet className="text-2xl text-[#FFC67D]" />
     </div>
-    <div className="mb-4">
-      <h4 className="text-sm font-semibold text-gray-400">Today's Earnings</h4>
-      <p className="text-xl font-bold">{todayPoints} BF</p>
+    
+    <div className="space-y-4">
+      <motion.div 
+        className="p-4 bg-gray-900/50 rounded-lg"
+        whileHover={{ scale: 1.02 }}
+      >
+        <h4 className="text-sm font-semibold text-gray-400">Total Balance</h4>
+        <p className="text-2xl font-bold">{bfPoints.toLocaleString()} BF</p>
+      </motion.div>
+      
+      <motion.div 
+        className="p-4 bg-gray-900/50 rounded-lg"
+        whileHover={{ scale: 1.02 }}
+      >
+        <h4 className="text-sm font-semibold text-gray-400">Today's Earnings</h4>
+        <p className="text-xl font-bold text-green-400">+{todayPoints.toLocaleString()} BF</p>
+      </motion.div>
+      
+      <motion.div 
+        className="p-4 bg-gray-900/50 rounded-lg"
+        whileHover={{ scale: 1.02 }}
+      >
+        <h4 className="text-sm font-semibold text-gray-400">ETH Balance</h4>
+        <p className="text-xl font-bold">{ethereumBalance.toFixed(6)} ETH</p>
+      </motion.div>
     </div>
-    <div>
-      <h4 className="text-sm font-semibold text-gray-400">Ethereum Balance</h4>
-      <p className="text-xl font-bold">{ethereumBalance.toFixed(6)} ETH</p>
-    </div>
-  </div>
+  </motion.div>
 );
 
 // ConversionCard component - Handles conversion between BF and ETH tokens
@@ -115,25 +170,33 @@ const ConversionCard = ({
   handleConversion: () => void;
   handleReset: () => void;
 }) => (
-  <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
-    <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Convert BF to ETH</h3>
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="bg-gray-800/50 backdrop-blur-lg p-6 rounded-xl border border-gray-700/50 w-full mb-6"
+  >
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-[#FFC67D] to-[#FF9B44]">
+        Token Conversion
+      </h3>
+      <RiExchangeLine className="text-2xl text-[#FFC67D]" />
+    </div>
+    
     <div className="flex flex-col md:flex-row md:items-end gap-4 mb-4">
       <div className="flex-1">
         <p className="text-sm font-semibold text-gray-400 mb-2">BF Amount</p>
         <input
-          className="w-full bg-gray-900 p-3 rounded-md text-white outline-none"
+          className="w-full bg-gray-900/50 p-4 rounded-xl text-white outline-none border border-gray-700/50 focus:border-[#FFC67D]/50 transition-all"
           type="number"
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Enter BF amount"
         />
       </div>
-      <div className="flex-1">
-        <p className="text-sm font-semibold text-gray-400 mb-2">
-          ETH Equivalent
-        </p>
+      <div className="flex-1 relative">
+        <p className="text-sm font-semibold text-gray-400 mb-2">ETH Equivalent</p>
         <input
-          className="w-full bg-gray-900 p-3 rounded-md text-white outline-none"
+          className="w-full bg-gray-900/50 p-4 rounded-xl text-white outline-none border border-gray-700/50"
           type="text"
           value={outputValue}
           readOnly
@@ -141,21 +204,162 @@ const ConversionCard = ({
         />
       </div>
     </div>
+    
     <div className="flex justify-center gap-4">
-      <button
-        className="bg-[#0097A7] px-4 py-2 rounded-lg font-medium"
-        onClick={handleConversion}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-gradient-to-r from-[#FFC67D] to-[#FF9B44] px-6 py-3 rounded-xl font-medium text-gray-900"
+        onClick={() => {
+          handleConversion();
+          toast.success("Conversion calculated successfully!");
+        }}
       >
-        Convert
-      </button>
-      <button
-        className="bg-gray-700 px-4 py-2 rounded-lg font-medium"
+        Convert Tokens
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-gray-700 px-6 py-3 rounded-xl font-medium"
         onClick={handleReset}
       >
         Reset
-      </button>
+      </motion.button>
+    </div>
+  </motion.div>
+);
+
+// HistoricalCharts component - Displays historical data using Recharts
+const HistoricalCharts = ({ data }: { data: any[] }) => (
+  <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
+    <h3 className="font-bold text-xl text-[#FFC67D] mb-6">Weekly Progress</h3>
+    <div className="space-y-8">
+      {/* Steps and Distance Chart */}
+      <div>
+        <h4 className="text-lg font-semibold mb-4">Steps & Distance</h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis
+              dataKey="date"
+              stroke="#9CA3AF"
+              style={{ fontSize: "12px" }}
+            />
+            <YAxis
+              yAxisId="left"
+              stroke="#9CA3AF"
+              style={{ fontSize: "12px" }}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              stroke="#9CA3AF"
+              style={{ fontSize: "12px" }}
+            />
+            <Tooltip
+              contentStyle={{ backgroundColor: "#1F2937", border: "none" }}
+            />
+            <Legend />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey="steps"
+              stroke="#FFC67D"
+              name="Steps"
+            />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="distance"
+              stroke="#0097A7"
+              name="Distance (km)"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Calories Chart */}
+      <div>
+        <h4 className="text-lg font-semibold mb-4">Calories Burned</h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis
+              dataKey="date"
+              stroke="#9CA3AF"
+              style={{ fontSize: "12px" }}
+            />
+            <YAxis stroke="#9CA3AF" style={{ fontSize: "12px" }} />
+            <Tooltip
+              contentStyle={{ backgroundColor: "#1F2937", border: "none" }}
+            />
+            <Legend />
+            <Bar
+              dataKey="calories"
+              fill="#FFC67D"
+              name="Calories"
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Weight Chart */}
+      <div>
+        <h4 className="text-lg font-semibold mb-4">Weight Tracking</h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis
+              dataKey="date"
+              stroke="#9CA3AF"
+              style={{ fontSize: "12px" }}
+            />
+            <YAxis stroke="#9CA3AF" style={{ fontSize: "12px" }} />
+            <Tooltip
+              contentStyle={{ backgroundColor: "#1F2937", border: "none" }}
+            />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="weight"
+              stroke="#0097A7"
+              name="Weight (kg)"
+              dot={{ stroke: '#0097A7', strokeWidth: 2, r: 4 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   </div>
+);
+
+// New component for animated stats card
+const AnimatedStatCard = ({
+  EIcon,
+  value,
+  label,
+  delay = 0,
+}: {
+  EIcon: IconType;
+  value?: string;
+  label?: string;
+  delay?: number;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay }}
+    className="bg-gray-800/50 backdrop-blur-lg p-4 rounded-xl border border-gray-700/50 hover:border-[#FFC67D]/50 transition-all"
+  >
+    <div className="flex flex-col items-center">
+      <EIcon className="text-3xl text-[#FFC67D] mb-2" />
+      <p className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FFC67D] to-[#FF9B44]">
+        {value}
+      </p>
+      <p className="text-sm text-gray-400">{label}</p>
+    </div>
+  </motion.div>
 );
 
 // Main Dashboard component
@@ -180,6 +384,7 @@ const Dashboard = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [lastUpdateTime, setLastUpdateTime] = useState<number>(Date.now());
   const POLLING_INTERVAL = 30000; // 30 seconds
+  const [historicalData, setHistoricalData] = useState<any[]>([]);
 
   // Handlers for conversion functionality
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -401,20 +606,21 @@ const Dashboard = () => {
         aggregateBy: [
           {
             dataTypeName: "com.google.heart_rate.bpm",
-            dataSourceId: "raw:com.google.heart_rate.bpm:com.google.android.apps.fitness:user_input"
+            dataSourceId:
+              "raw:com.google.heart_rate.bpm:com.google.android.apps.fitness:user_input",
           },
         ],
         bucketByTime: { durationMillis: 86400000 },
-        startTimeMillis: startTime - (7 * 24 * 60 * 60 * 1000), // Look back 7 days
+        startTimeMillis: startTime - 7 * 24 * 60 * 60 * 1000, // Look back 7 days
         endTimeMillis: endTime,
       });
 
       // Process heart rate data
       const heartRateData = JSON.parse(heartRateResponse.body);
       console.log("Heart Rate Response:", heartRateData);
-      
+
       let heartRateValue = 0;
-      
+
       // Check all buckets for heart rate data
       for (const bucket of heartRateData.bucket) {
         if (bucket.dataset[0]?.point?.length > 0) {
@@ -469,7 +675,92 @@ const Dashboard = () => {
     }
   };
 
-  
+  // Function to fetch historical fitness data
+  const fetchHistoricalData = async () => {
+    console.log("Fetching historical data...");
+    try {
+      const now = Date.now();
+      const startTime = now - 7 * 24 * 60 * 60 * 1000; // 7 days ago
+
+      // Fetch historical steps data
+      const stepsResponse = await (
+        window as any
+      ).gapi.client.fitness.users.dataset.aggregate({
+        userId: "me",
+        aggregateBy: [
+          {
+            dataTypeName: "com.google.step_count.delta",
+          },
+        ],
+        bucketByTime: { durationMillis: 86400000 }, // Daily buckets
+        startTimeMillis: startTime,
+        endTimeMillis: now,
+      });
+
+      // Fetch historical calories data
+      const caloriesResponse = await (
+        window as any
+      ).gapi.client.fitness.users.dataset.aggregate({
+        userId: "me",
+        aggregateBy: [
+          {
+            dataTypeName: "com.google.calories.expended",
+          },
+        ],
+        bucketByTime: { durationMillis: 86400000 },
+        startTimeMillis: startTime,
+        endTimeMillis: now,
+      });
+
+      // Fetch historical weight data
+      const weightResponse = await (
+        window as any
+      ).gapi.client.fitness.users.dataset.aggregate({
+        userId: "me",
+        aggregateBy: [
+          {
+            dataTypeName: "com.google.weight",
+          },
+        ],
+        bucketByTime: { durationMillis: 86400000 },
+        startTimeMillis: startTime,
+        endTimeMillis: now,
+      });
+
+      // Process the responses
+      const stepsData = JSON.parse(stepsResponse.body);
+      const caloriesData = JSON.parse(caloriesResponse.body);
+      const weightData = JSON.parse(weightResponse.body);
+
+      // Format data for display
+      const historicalData = stepsData.bucket.map(
+        (bucket: any, index: number) => {
+          const date = new Date(parseInt(bucket.startTimeMillis));
+          return {
+            date: date.toLocaleDateString(),
+            steps: bucket.dataset[0].point[0]?.value[0]?.intVal || 0,
+            calories:
+              Math.round(
+                caloriesData.bucket[index]?.dataset[0]?.point[0]?.value[0]
+                  ?.fpVal
+              ) || 0,
+            weight:
+              Math.round(
+                weightData.bucket[index]?.dataset[0]?.point[0]?.value[0]?.fpVal
+              ) || 0,
+            // Calculate distance roughly from steps (average stride length 0.762m)
+            distance: ((bucket.dataset[0].point[0]?.value[0]?.intVal || 0) * 0.762 / 1000).toFixed(2)
+          };
+        }
+      );
+      console.log({ historicalData });
+      return historicalData;
+    } catch (error) {
+      console.error("Error fetching historical data:", error);
+      setErrors((prev) => [...prev, "Failed to fetch historical data"]);
+      return [];
+    }
+  };
 
   // Effect hook to set up subscription and polling
   useEffect(() => {
@@ -479,6 +770,9 @@ const Dashboard = () => {
 
       // Fetch initial data
       fetchFitnessData(true);
+
+      // Fetch historical data
+      fetchHistoricalData().then(data => setHistoricalData(data));
 
       // Set up polling interval as backup
       const pollingInterval = setInterval(() => {
@@ -492,19 +786,24 @@ const Dashboard = () => {
     }
   }, [isAuthenticated]);
 
-  // Add a manual refresh button for user-triggered updates
+  // Add toast notifications for key actions
   const handleManualRefresh = async () => {
+    toast.info("Refreshing data...");
     await fetchFitnessData(true);
+    toast.success("Data refreshed successfully!");
   };
 
-  // Add this to your JSX where appropriate
+  // Updated RefreshButton with animation
   const RefreshButton = () => (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
       onClick={handleManualRefresh}
-      className="bg-[#0097A7] px-4 py-2 rounded-lg font-medium"
+      className="bg-gradient-to-r from-[#FFC67D] to-[#FF9B44] px-6 py-3 rounded-xl font-medium text-gray-900 flex items-center gap-2"
     >
+      <IoMdRefresh className="text-xl" />
       Refresh Data
-    </button>
+    </motion.button>
   );
 
   // Effect hook to load Google scripts and initialize Google Fit
@@ -567,136 +866,156 @@ const Dashboard = () => {
 
   // Render the dashboard
   return (
-    <div className="bg-gray-900 text-white p-6 w-full lg:flex lg:flex-col lg:items-center">
-      {!isAuthenticated ? (
-        <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6 flex justify-center">
-          <button
-            onClick={() => initializeGoogleFit()}
-            className="bg-[#4285F4] text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-6">
+      <div className="max-w-7xl mx-auto">
+        {!isAuthenticated ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gray-800/50 backdrop-blur-lg p-8 rounded-xl border border-gray-700/50 w-full mb-6 flex justify-center"
           >
-            <img
-              src="https://developers.google.com/identity/images/g-logo.png"
-              alt="Google Logo"
-              className="w-6 h-6 bg-white p-1 rounded-full"
-            />
-            Sign in with Google
-          </button>
-        </div>
-      ) : (
-        <>
-          {/* User Profile Section */}
-          {userInfo && (
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-xl text-[#FFC67D]">
-                  User Profile
-                </h3>
-                <button
-                  onClick={handleSignOut}
-                  className="bg-red-600 px-4 py-2 rounded-lg font-medium"
-                >
-                  Sign Out
-                </button>
-              </div>
-              <div className="flex items-center gap-4">
-                {userInfo.picture && (
-                  <img
-                    src={userInfo.picture}
-                    alt="Profile"
-                    className="w-16 h-16 rounded-full bg-gray-400"
-                  />
-                )}
-                <div>
-                  <p className="font-bold">{userInfo.name}</p>
-                  <p className="text-gray-400">{userInfo.email}</p>
+            <button
+              onClick={() => initializeGoogleFit()}
+              className="bg-[#4285F4] text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"
+            >
+              <img
+                src="https://developers.google.com/identity/images/g-logo.png"
+                alt="Google Logo"
+                className="w-6 h-6 bg-white p-1 rounded-full"
+              />
+              Sign in with Google
+            </button>
+          </motion.div>
+        ) : (
+          <>
+            {/* User Profile Section */}
+            {userInfo && (
+              <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-xl text-[#FFC67D]">
+                    User Profile
+                  </h3>
+                  <button
+                    onClick={handleSignOut}
+                    className="bg-red-600 px-4 py-2 rounded-lg font-medium"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+                <div className="flex items-center gap-4">
+                  {userInfo.picture && (
+                    <img
+                      src={userInfo.picture}
+                      alt="Profile"
+                      className="w-16 h-16 rounded-full bg-gray-400"
+                    />
+                  )}
+                  <div>
+                    <p className="font-bold">{userInfo.name}</p>
+                    <p className="text-gray-400">{userInfo.email}</p>
+                  </div>
                 </div>
               </div>
+            )}
+
+            {/* Error Display Section */}
+            {/* {errors.length > 0 && (
+              <div className="bg-red-900 p-4 rounded-lg shadow-lg w-full mb-6">
+                <h3 className="font-bold text-xl text-red-400 mb-2">Errors</h3>
+                <ul className="list-disc pl-4">
+                  {errors.map((error, index) => (
+                    <li key={index} className="text-red-200">{error}</li>
+                  ))}
+                </ul>
+              </div>
+            )} */}
+
+            {/* Motivational Message Section */}
+            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
+              <p className="text-sm text-gray-400 font-semibold">
+                Push beyond your limits today, because the greatest growth comes
+                from the{" "}
+                <button className="text-[#FFC67D] text-semibold underline">
+                  challenges
+                </button>{" "}
+                you dare to face.
+              </p>
             </div>
-          )}
 
-          {/* Error Display Section */}
-          {/* {errors.length > 0 && (
-            <div className="bg-red-900 p-4 rounded-lg shadow-lg w-full mb-6">
-              <h3 className="font-bold text-xl text-red-400 mb-2">Errors</h3>
-              <ul className="list-disc pl-4">
-                {errors.map((error, index) => (
-                  <li key={index} className="text-red-200">{error}</li>
-                ))}
-              </ul>
+            {/* Statistics Grid Section */}
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
+              <h3 className="font-bold text-xl text-[#FFC67D] mb-4">
+                Today's Stats
+              </h3>
+              <div className="grid grid-cols-4 gap-4">
+                <AnimatedStatCard
+                  EIcon={FaFire}
+                  value={caloriesBurned.toString()}
+                  label="Calories Burned"
+                />
+                <AnimatedStatCard
+                  EIcon={FaHeartbeat}
+                  value={`${heartRate} bpm`}
+                  label="Avg. Heart Rate"
+                />
+                <AnimatedStatCard EIcon={FaDumbbell} value="45 min" label="Workout Time" />
+                <AnimatedStatCard EIcon={FaRunning} value="Running" label="Activity" />
+                <AnimatedStatCard EIcon={FaSwimmer} value="30 min" label="Swimming" />
+                <AnimatedStatCard EIcon={FaBicycle} value="Cycling" label="Activity" />
+                <AnimatedStatCard
+                  EIcon={FaAppleAlt}
+                  value={`${waterIntake} ml`}
+                  label="Water Intake"
+                />
+                <AnimatedStatCard EIcon={FaWeight} value={`${weight} kg`} label="Weight" />
+              </div>
             </div>
-          )} */}
 
-          {/* Motivational Message Section */}
-          <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
-            <p className="text-sm text-gray-400 font-semibold">
-              Push beyond your limits today, because the greatest growth comes
-              from the{" "}
-              <button className="text-[#FFC67D] text-semibold underline">
-                challenges
-              </button>{" "}
-              you dare to face.
-            </p>
-          </div>
-
-          {/* Statistics Grid Section */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
-            <h3 className="font-bold text-xl text-[#FFC67D] mb-4">
-              Today's Stats
-            </h3>
-            <div className="grid grid-cols-4 gap-4">
-              <StatCard
-                icon={FaFire}
-                value={caloriesBurned}
-                label="Calories Burned"
+            {/* Progress and Wallet Section */}
+            <div className="lg:flex lg:gap-6 w-full">
+              <ProgressCard
+                steps={steps}
+                progress={progress}
+                distance={distance}
+                dailyGoal={dailyGoal}
+                getEncouragement={getEncouragement}
               />
-              <StatCard
-                icon={FaHeartbeat}
-                value={`${heartRate} bpm`}
-                label="Avg. Heart Rate"
+              <WalletCard
+                bfPoints={bfPoints}
+                todayPoints={todayPoints}
+                ethereumBalance={ethereumBalance}
               />
-              <StatCard icon={FaDumbbell} value="45 min" label="Workout Time" />
-              <StatCard icon={FaRunning} value="Running" label="Activity" />
-              <StatCard icon={FaSwimmer} value="30 min" label="Swimming" />
-              <StatCard icon={FaBicycle} value="Cycling" label="Activity" />
-              <StatCard
-                icon={FaAppleAlt}
-                value={`${waterIntake} ml`}
-                label="Water Intake"
-              />
-              <StatCard icon={FaWeight} value={`${weight} kg`} label="Weight" />
             </div>
-          </div>
 
-          {/* Progress and Wallet Section */}
-          <div className="lg:flex lg:gap-6 w-full">
-            <ProgressCard
-              steps={steps}
-              progress={progress}
-              distance={distance}
-              dailyGoal={dailyGoal}
-              getEncouragement={getEncouragement}
+            {/* Conversion Section */}
+            <ConversionCard
+              inputValue={inputValue}
+              outputValue={outputValue}
+              handleInputChange={handleInputChange}
+              handleConversion={handleConversion}
+              handleReset={handleReset}
             />
-            <WalletCard
-              bfPoints={bfPoints}
-              todayPoints={todayPoints}
-              ethereumBalance={ethereumBalance}
-            />
-          </div>
 
-          {/* Conversion Section */}
-          <ConversionCard
-            inputValue={inputValue}
-            outputValue={outputValue}
-            handleInputChange={handleInputChange}
-            handleConversion={handleConversion}
-            handleReset={handleReset}
-          />
-
-          {/* Refresh Button */}
-          <RefreshButton />
-        </>
-      )}
-      <ToastContainer />
+            {/* Refresh Button */}
+            <RefreshButton />
+            
+            {/* Historical Charts */}
+            {historicalData.length > 0 && <HistoricalCharts data={historicalData} />}
+          </>
+        )}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+      </div>
     </div>
   );
 };
