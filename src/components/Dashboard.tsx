@@ -2,14 +2,31 @@
 "use client"; // Marks this as a client-side component
 
 import React, { useEffect, useState } from "react";
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-import { FaFire, FaHeartbeat, FaDumbbell, FaRunning, FaSwimmer, FaBicycle, FaAppleAlt, FaWeight } from 'react-icons/fa';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import {
+  FaFire,
+  FaHeartbeat,
+  FaDumbbell,
+  FaRunning,
+  FaSwimmer,
+  FaBicycle,
+  FaAppleAlt,
+  FaWeight,
+} from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // StatCard component - Displays individual statistics with an icon, value and label
-const StatCard = ({ icon: Icon, value, label }: { icon: any, value: string | number, label: string }) => (
+const StatCard = ({
+  icon: Icon,
+  value,
+  label,
+}: {
+  icon: any;
+  value: string | number;
+  label: string;
+}) => (
   <div className="flex flex-col items-center">
     <Icon className="text-3xl text-[#FFC67D] mb-2" />
     <p className="text-lg font-bold">{value}</p>
@@ -18,12 +35,18 @@ const StatCard = ({ icon: Icon, value, label }: { icon: any, value: string | num
 );
 
 // ProgressCard component - Shows daily progress including steps, circular progress bar and distance err
-const ProgressCard = ({ steps, progress, distance, dailyGoal, getEncouragement }: { 
-  steps: number, 
-  progress: number, 
-  distance: number,
-  dailyGoal: number,
-  getEncouragement: (steps: number) => string
+const ProgressCard = ({
+  steps,
+  progress,
+  distance,
+  dailyGoal,
+  getEncouragement,
+}: {
+  steps: number;
+  progress: number;
+  distance: number;
+  dailyGoal: number;
+  getEncouragement: (steps: number) => string;
 }) => (
   <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 lg:w-1/2">
     <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Daily Progress</h3>
@@ -36,7 +59,7 @@ const ProgressCard = ({ steps, progress, distance, dailyGoal, getEncouragement }
           styles={buildStyles({
             textColor: "#FFC67D",
             pathColor: "#FFC67D",
-            trailColor: "#374151"
+            trailColor: "#374151",
           })}
         />
       </div>
@@ -52,10 +75,14 @@ const ProgressCard = ({ steps, progress, distance, dailyGoal, getEncouragement }
 );
 
 // WalletCard component - Displays cryptocurrency wallet information
-const WalletCard = ({ bfPoints, todayPoints, ethereumBalance }: {
-  bfPoints: number,
-  todayPoints: number,
-  ethereumBalance: number
+const WalletCard = ({
+  bfPoints,
+  todayPoints,
+  ethereumBalance,
+}: {
+  bfPoints: number;
+  todayPoints: number;
+  ethereumBalance: number;
 }) => (
   <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 lg:w-1/2">
     <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Wallet</h3>
@@ -75,12 +102,18 @@ const WalletCard = ({ bfPoints, todayPoints, ethereumBalance }: {
 );
 
 // ConversionCard component - Handles conversion between BF and ETH tokens
-const ConversionCard = ({ inputValue, outputValue, handleInputChange, handleConversion, handleReset }: {
-  inputValue: string,
-  outputValue: string,
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  handleConversion: () => void,
-  handleReset: () => void
+const ConversionCard = ({
+  inputValue,
+  outputValue,
+  handleInputChange,
+  handleConversion,
+  handleReset,
+}: {
+  inputValue: string;
+  outputValue: string;
+  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleConversion: () => void;
+  handleReset: () => void;
 }) => (
   <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
     <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Convert BF to ETH</h3>
@@ -96,7 +129,9 @@ const ConversionCard = ({ inputValue, outputValue, handleInputChange, handleConv
         />
       </div>
       <div className="flex-1">
-        <p className="text-sm font-semibold text-gray-400 mb-2">ETH Equivalent</p>
+        <p className="text-sm font-semibold text-gray-400 mb-2">
+          ETH Equivalent
+        </p>
         <input
           className="w-full bg-gray-900 p-3 rounded-md text-white outline-none"
           type="text"
@@ -181,8 +216,8 @@ const Dashboard = () => {
 
   // Check if user is already authenticated
   const checkAuthStatus = () => {
-    const savedToken = localStorage.getItem('googleAccessToken');
-    console.log('Checking saved token:', savedToken);
+    const savedToken = localStorage.getItem("googleAccessToken");
+    console.log("Checking saved token:", savedToken);
     if (savedToken) {
       setAccessToken(savedToken);
       setIsAuthenticated(true);
@@ -193,8 +228,8 @@ const Dashboard = () => {
 
   // Handle sign out
   const handleSignOut = () => {
-    localStorage.removeItem('googleAccessToken');
-    localStorage.removeItem('userInfo');
+    localStorage.removeItem("googleAccessToken");
+    localStorage.removeItem("userInfo");
     setAccessToken(null);
     setIsAuthenticated(false);
     setUserInfo(null);
@@ -206,59 +241,72 @@ const Dashboard = () => {
     try {
       // Check if already authenticated
       if (checkAuthStatus()) {
-        console.log('User already authenticated, fetching data...');
+        console.log("User already authenticated, fetching data...");
         await fetchFitnessData();
         return;
       }
 
       if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-        throw new Error('Google Client ID is not defined in environment variables');
+        throw new Error(
+          "Google Client ID is not defined in environment variables"
+        );
       }
 
-      console.log('Initializing Google Fit...');
+      console.log("Initializing Google Fit...");
 
       // Initialize Google Identity Services client
-      const tokenClient = (window as any).google.accounts.oauth2.initTokenClient({
+      const tokenClient = (
+        window as any
+      ).google.accounts.oauth2.initTokenClient({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        scope: 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/userinfo.profile',
+        scope:
+          "https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/userinfo.profile",
         callback: async (tokenResponse: any) => {
           if (tokenResponse.access_token) {
-            console.log('New token received:', tokenResponse);
+            console.log("New token received:", tokenResponse);
             setAccessToken(tokenResponse.access_token);
-            localStorage.setItem('googleAccessToken', tokenResponse.access_token);
+            localStorage.setItem(
+              "googleAccessToken",
+              tokenResponse.access_token
+            );
             setIsAuthenticated(true);
-            
+
             // Initialize Google API client
             await (window as any).gapi.client.init({
               apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
-              discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/fitness/v1/rest'],
-              clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+              discoveryDocs: [
+                "https://www.googleapis.com/discovery/v1/apis/fitness/v1/rest",
+              ],
+              clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
             });
-            
+
             // Load the fitness API
-            await (window as any).gapi.client.load('fitness', 'v1');
-            
+            await (window as any).gapi.client.load("fitness", "v1");
+
             // Set access token
             (window as any).gapi.client.setToken({
-              access_token: tokenResponse.access_token
+              access_token: tokenResponse.access_token,
             });
 
             // Fetch user information
             try {
-              const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                headers: {
-                  'Authorization': `Bearer ${tokenResponse.access_token}`
+              const userInfoResponse = await fetch(
+                "https://www.googleapis.com/oauth2/v3/userinfo",
+                {
+                  headers: {
+                    Authorization: `Bearer ${tokenResponse.access_token}`,
+                  },
                 }
-              });
+              );
               const userInfoData = await userInfoResponse.json();
-              console.log('User Info:', userInfoData);
+              console.log("User Info:", userInfoData);
               setUserInfo(userInfoData);
-              localStorage.setItem('userInfo', JSON.stringify(userInfoData));
+              localStorage.setItem("userInfo", JSON.stringify(userInfoData));
             } catch (error) {
-              console.error('Error fetching user info:', error);
-              setErrors(prev => [...prev, 'Failed to fetch user info']);
+              console.error("Error fetching user info:", error);
+              setErrors((prev) => [...prev, "Failed to fetch user info"]);
             }
-            
+
             // Fetch fitness data
             fetchFitnessData();
           }
@@ -267,29 +315,31 @@ const Dashboard = () => {
 
       // Request access token
       tokenClient.requestAccessToken();
-
     } catch (error) {
-      console.error('Error initializing Google Fit:', error);
-      console.error('Full error details:', JSON.stringify(error, null, 2));
-      setErrors(prev => [...prev, 'Failed to initialize Google Fit']);
+      console.error("Error initializing Google Fit:", error);
+      console.error("Full error details:", JSON.stringify(error, null, 2));
+      setErrors((prev) => [...prev, "Failed to initialize Google Fit"]);
     }
   };
 
   // Function to subscribe to Google Fit data changes
   const subscribeToFitnessUpdates = async () => {
     try {
-      const response = await (window as any).gapi.client.fitness.users.dataSources.subscribe({
-        userId: 'me',
-        dataSourceId: 'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps',
+      const response = await (
+        window as any
+      ).gapi.client.fitness.users.dataSources.subscribe({
+        userId: "me",
+        dataSourceId:
+          "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
         subscription: {
-          dataTypeName: 'com.google.step_count.delta'
-        }
+          dataTypeName: "com.google.step_count.delta",
+        },
       });
-      
-      console.log('Subscription successful:', response);
+
+      console.log("Subscription successful:", response);
     } catch (error) {
-      console.error('Error subscribing to updates:', error);
-      setErrors(prev => [...prev, 'Failed to subscribe to fitness updates']);
+      console.error("Error subscribing to updates:", error);
+      setErrors((prev) => [...prev, "Failed to subscribe to fitness updates"]);
     }
   };
 
@@ -298,36 +348,42 @@ const Dashboard = () => {
     try {
       const now = Date.now();
       // Only fetch if forced or if more than polling interval has passed
-      if (!force && (now - lastUpdateTime) < POLLING_INTERVAL) {
+      if (!force && now - lastUpdateTime < POLLING_INTERVAL) {
         return;
       }
 
       // Check if fitness API is loaded
       if (!(window as any).gapi.client.fitness) {
-        await (window as any).gapi.client.load('fitness', 'v1');
+        await (window as any).gapi.client.load("fitness", "v1");
       }
 
-      console.log('Fetching fitness data...');
+      console.log("Fetching fitness data...");
       const today = new Date();
       const startTime = new Date(today.setHours(0, 0, 0, 0)).getTime();
       const endTime = now;
 
       // Fetch steps data
-      const stepsResponse = await (window as any).gapi.client.fitness.users.dataset.aggregate({
-        userId: 'me',
-        aggregateBy: [{
-          dataTypeName: 'com.google.step_count.delta'
-        }],
+      const stepsResponse = await (
+        window as any
+      ).gapi.client.fitness.users.dataset.aggregate({
+        userId: "me",
+        aggregateBy: [
+          {
+            dataTypeName: "com.google.step_count.delta",
+          },
+        ],
         bucketByTime: { durationMillis: 86400000 },
         startTimeMillis: startTime,
-        endTimeMillis: endTime
+        endTimeMillis: endTime,
       });
 
       // Process steps data
       const stepsData = JSON.parse(stepsResponse.body);
       if (stepsData.bucket[0]?.dataset[0]?.point?.length > 0) {
-        const stepsCount = stepsData.bucket[0].dataset[0].point[0].value[0].intVal || 0;
-        if (stepsCount !== steps) { // Only update if steps count has changed
+        const stepsCount =
+          stepsData.bucket[0].dataset[0].point[0].value[0].intVal || 0;
+        if (stepsCount !== steps) {
+          // Only update if steps count has changed
           setSteps(stepsCount);
           setBfPoints(Math.floor(stepsCount / 100));
           setTodayPoints(Math.floor(stepsCount / 10));
@@ -338,58 +394,89 @@ const Dashboard = () => {
       }
 
       // Fetch heart rate data
-      const heartRateResponse = await (window as any).gapi.client.fitness.users.dataset.aggregate({
-        userId: 'me',
-        aggregateBy: [{
-          dataTypeName: 'com.google.heart_rate.bpm'
-        }],
+      const heartRateResponse = await (
+        window as any
+      ).gapi.client.fitness.users.dataset.aggregate({
+        userId: "me",
+        aggregateBy: [
+          {
+            dataTypeName: "com.google.heart_rate.bpm",
+            dataSourceId: "raw:com.google.heart_rate.bpm:com.google.android.apps.fitness:user_input"
+          },
+        ],
         bucketByTime: { durationMillis: 86400000 },
-        startTimeMillis: startTime,
-        endTimeMillis: endTime
+        startTimeMillis: startTime - (7 * 24 * 60 * 60 * 1000), // Look back 7 days
+        endTimeMillis: endTime,
       });
 
       // Process heart rate data
       const heartRateData = JSON.parse(heartRateResponse.body);
-      if (heartRateData.bucket[0]?.dataset[0]?.point?.length > 0) {
-        const heartRateValue = Math.round(heartRateData.bucket[0].dataset[0].point[0].value[0].fpVal) || 0;
-        if (heartRateValue !== heartRate) { // Only update if heart rate has changed
-          setHeartRate(heartRateValue);
+      console.log("Heart Rate Response:", heartRateData);
+      
+      let heartRateValue = 0;
+      
+      // Check all buckets for heart rate data
+      for (const bucket of heartRateData.bucket) {
+        if (bucket.dataset[0]?.point?.length > 0) {
+          // Get the most recent heart rate reading
+          const points = bucket.dataset[0].point;
+          const latestPoint = points[points.length - 1];
+          if (latestPoint?.value[0]?.fpVal) {
+            heartRateValue = Math.round(latestPoint.value[0].fpVal);
+            break;
+          }
         }
       }
 
+      if (heartRateValue !== heartRate && heartRateValue > 0) {
+        console.log("Setting new heart rate:", heartRateValue);
+        setHeartRate(heartRateValue);
+      } else {
+        console.log("No valid heart rate found or no change in value");
+      }
+
       // Fetch weight data
-      const weightResponse = await (window as any).gapi.client.fitness.users.dataset.aggregate({
-        userId: 'me',
-        aggregateBy: [{
-          dataTypeName: 'com.google.weight'
-        }],
+      const weightResponse = await (
+        window as any
+      ).gapi.client.fitness.users.dataset.aggregate({
+        userId: "me",
+        aggregateBy: [
+          {
+            dataTypeName: "com.google.weight",
+          },
+        ],
         bucketByTime: { durationMillis: 86400000 },
         startTimeMillis: startTime,
-        endTimeMillis: endTime
+        endTimeMillis: endTime,
       });
 
       // Process weight data
       const weightData = JSON.parse(weightResponse.body);
       if (weightData.bucket[0]?.dataset[0]?.point?.length > 0) {
-        const weightValue = Math.round(weightData.bucket[0].dataset[0].point[0].value[0].fpVal) || 0;
-        if (weightValue !== weight) { // Only update if weight has changed
+        const weightValue =
+          Math.round(weightData.bucket[0].dataset[0].point[0].value[0].fpVal) ||
+          0;
+        if (weightValue !== weight) {
+          // Only update if weight has changed
           setWeight(weightValue);
         }
       }
 
       setLastUpdateTime(now);
     } catch (error) {
-      console.error('Error fetching fitness data:', error);
-      setErrors(prev => [...prev, 'Failed to fetch fitness data']);
+      console.error("Error fetching fitness data:", error);
+      setErrors((prev) => [...prev, "Failed to fetch fitness data"]);
     }
   };
+
+  
 
   // Effect hook to set up subscription and polling
   useEffect(() => {
     if (isAuthenticated) {
       // Set up initial subscription
       subscribeToFitnessUpdates();
-      
+
       // Fetch initial data
       fetchFitnessData(true);
 
@@ -422,41 +509,40 @@ const Dashboard = () => {
 
   // Effect hook to load Google scripts and initialize Google Fit
   useEffect(() => {
-    console.log('Loading Google scripts...');
+    console.log("Loading Google scripts...");
     const loadScripts = async () => {
       try {
         // Load Google Identity Services script
         await new Promise<void>((resolve) => {
-          const gsiScript = document.createElement('script');
-          gsiScript.src = 'https://accounts.google.com/gsi/client';
-          gsiScript.id = 'google-gsi-script';
+          const gsiScript = document.createElement("script");
+          gsiScript.src = "https://accounts.google.com/gsi/client";
+          gsiScript.id = "google-gsi-script";
           gsiScript.onload = () => resolve();
           document.body.appendChild(gsiScript);
         });
 
         // Load Google API script
         await new Promise<void>((resolve) => {
-          const gapiScript = document.createElement('script');
-          gapiScript.src = 'https://apis.google.com/js/api.js';
-          gapiScript.id = 'google-gapi-script';
+          const gapiScript = document.createElement("script");
+          gapiScript.src = "https://apis.google.com/js/api.js";
+          gapiScript.id = "google-gapi-script";
           gapiScript.onload = () => {
-            (window as any).gapi.load('client', () => resolve());
+            (window as any).gapi.load("client", () => resolve());
           };
           document.body.appendChild(gapiScript);
         });
 
         // Check for saved user info
-        const savedUserInfo = localStorage.getItem('userInfo');
+        const savedUserInfo = localStorage.getItem("userInfo");
         if (savedUserInfo) {
           setUserInfo(JSON.parse(savedUserInfo));
         }
 
         // Check auth status but don't initialize Google Fit automatically
         checkAuthStatus();
-
       } catch (error) {
-        console.error('Error loading scripts:', error);
-        setErrors(prev => [...prev, 'Failed to load Google scripts']);
+        console.error("Error loading scripts:", error);
+        setErrors((prev) => [...prev, "Failed to load Google scripts"]);
       }
     };
 
@@ -464,8 +550,8 @@ const Dashboard = () => {
 
     // Cleanup function to remove scripts
     return () => {
-      const gapiScript = document.getElementById('google-gapi-script');
-      const gsiScript = document.getElementById('google-gsi-script');
+      const gapiScript = document.getElementById("google-gapi-script");
+      const gsiScript = document.getElementById("google-gsi-script");
 
       if (gapiScript?.parentNode) {
         gapiScript.parentNode.removeChild(gapiScript);
@@ -476,8 +562,8 @@ const Dashboard = () => {
     };
   }, []);
 
-  console.log('Current user info:', userInfo);
-  console.log('Authentication status:', isAuthenticated);
+  console.log("Current user info:", userInfo);
+  console.log("Authentication status:", isAuthenticated);
 
   // Render the dashboard
   return (
@@ -488,9 +574,9 @@ const Dashboard = () => {
             onClick={() => initializeGoogleFit()}
             className="bg-[#4285F4] text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"
           >
-            <img 
-              src="https://developers.google.com/identity/images/g-logo.png" 
-              alt="Google Logo" 
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google Logo"
               className="w-6 h-6 bg-white p-1 rounded-full"
             />
             Sign in with Google
@@ -502,7 +588,9 @@ const Dashboard = () => {
           {userInfo && (
             <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-xl text-[#FFC67D]">User Profile</h3>
+                <h3 className="font-bold text-xl text-[#FFC67D]">
+                  User Profile
+                </h3>
                 <button
                   onClick={handleSignOut}
                   className="bg-red-600 px-4 py-2 rounded-lg font-medium"
@@ -512,7 +600,11 @@ const Dashboard = () => {
               </div>
               <div className="flex items-center gap-4">
                 {userInfo.picture && (
-                  <img src={userInfo.picture} alt="Profile" className="w-16 h-16 rounded-full bg-gray-400" />
+                  <img
+                    src={userInfo.picture}
+                    alt="Profile"
+                    className="w-16 h-16 rounded-full bg-gray-400"
+                  />
                 )}
                 <div>
                   <p className="font-bold">{userInfo.name}</p>
@@ -537,7 +629,8 @@ const Dashboard = () => {
           {/* Motivational Message Section */}
           <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full mb-6">
             <p className="text-sm text-gray-400 font-semibold">
-              Push beyond your limits today, because the greatest growth comes from the{" "}
+              Push beyond your limits today, because the greatest growth comes
+              from the{" "}
               <button className="text-[#FFC67D] text-semibold underline">
                 challenges
               </button>{" "}
@@ -547,29 +640,43 @@ const Dashboard = () => {
 
           {/* Statistics Grid Section */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full mb-6">
-            <h3 className="font-bold text-xl text-[#FFC67D] mb-4">Today's Stats</h3>
+            <h3 className="font-bold text-xl text-[#FFC67D] mb-4">
+              Today's Stats
+            </h3>
             <div className="grid grid-cols-4 gap-4">
-              <StatCard icon={FaFire} value={caloriesBurned} label="Calories Burned" />
-              <StatCard icon={FaHeartbeat} value={heartRate} label="Avg. Heart Rate" />
+              <StatCard
+                icon={FaFire}
+                value={caloriesBurned}
+                label="Calories Burned"
+              />
+              <StatCard
+                icon={FaHeartbeat}
+                value={`${heartRate} bpm`}
+                label="Avg. Heart Rate"
+              />
               <StatCard icon={FaDumbbell} value="45 min" label="Workout Time" />
               <StatCard icon={FaRunning} value="Running" label="Activity" />
               <StatCard icon={FaSwimmer} value="30 min" label="Swimming" />
               <StatCard icon={FaBicycle} value="Cycling" label="Activity" />
-              <StatCard icon={FaAppleAlt} value={`${waterIntake} ml`} label="Water Intake" />
+              <StatCard
+                icon={FaAppleAlt}
+                value={`${waterIntake} ml`}
+                label="Water Intake"
+              />
               <StatCard icon={FaWeight} value={`${weight} kg`} label="Weight" />
             </div>
           </div>
 
           {/* Progress and Wallet Section */}
           <div className="lg:flex lg:gap-6 w-full">
-            <ProgressCard 
+            <ProgressCard
               steps={steps}
               progress={progress}
               distance={distance}
               dailyGoal={dailyGoal}
               getEncouragement={getEncouragement}
             />
-            <WalletCard 
+            <WalletCard
               bfPoints={bfPoints}
               todayPoints={todayPoints}
               ethereumBalance={ethereumBalance}
