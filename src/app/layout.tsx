@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex items-center justify-center scrollbar-hide bg-cyan-950 overflow-y-auto max-h-screen">
+      <body className="flex items-center justify-center scrollbar-hide bg-cyan-950 overflow-y-auto hide bar max-h-screen">
         <StoreProvider>
           {" "}
           <NextProviders>

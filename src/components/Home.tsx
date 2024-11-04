@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef,  } from "react";
+import React, { useRef } from "react";
 import { FC } from "react";
 import {
   motion,
@@ -24,7 +24,7 @@ const Home: FC = () => {
   const horizontalScroll = useTransform(
     scrollYProgress,
     [0.1, 1],
-    ["0%", "-300%"]
+    ["0%", "-400%"]
   );
 
   const verticalScroll = useTransform(
@@ -42,7 +42,7 @@ const Home: FC = () => {
     <>
       <div
         ref={containerRef}
-        className="h-full relative overflow-hid bg-[#083344]"
+        className="h-full relative overflow-hid scrollbar-hide bg-[#083344]"
       >
         {/* Intense Web3 Animated Background */}
         <div className="fixed inset-0 overflow-hidden perspective-1000">
@@ -88,7 +88,7 @@ const Home: FC = () => {
             ))}
           </div>
 */}
-          {/* Energetic nodes network */}
+          {/* Energetic nodes network 
           <div className="absolute inset-0">
             {[...Array(30)].map((_, i) => (
               <motion.div
@@ -103,7 +103,7 @@ const Home: FC = () => {
                 <div className="absolute top-1/2 left-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cyan-400/50 animate-[ping_1.5s_ease-out_infinite]" />
               </motion.div>
             ))}
-          </div>
+          </div> */}
 
           {/* Dynamic matrix rain effect 
           <div className="absolute inset-0 opacity-30">
@@ -141,7 +141,7 @@ const Home: FC = () => {
             <div className="w-full h-full bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-blue-500/20 animate-[pulse_4s_ease-in-out_infinite]" />
           </motion.div>
 
-          {/* Enhanced Web3 Symbols */}
+          {/* Enhanced Web3 Symbols
           <div className="absolute inset-0">
             {["₿", "Ξ", "◈", "∞", "⬡", "⟠", "∰", "⨊"].map((symbol, i) => (
               <motion.div
@@ -169,11 +169,11 @@ const Home: FC = () => {
               </motion.div>
             ))}
           </div>
-
+ */}
           {/* High contrast overlay with vignette */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.8)_100%)]" />
 
-          {/* Enhanced holographic effect */}
+          {/* Enhanced holographic effect
           <motion.div
             className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/10 to-purple-500/10"
             style={{
@@ -188,7 +188,7 @@ const Home: FC = () => {
               repeat: Infinity,
               ease: "linear",
             }}
-          />
+          />  */}
 
           {/* Enhanced SVG Filters */}
           <svg className="hidden">
@@ -395,57 +395,454 @@ const Home: FC = () => {
           </motion.section>
 
           {/* Horizontal Scroll Section */}
-          <div className=" sticky top-[50px] h-[500vh] ">
-            <div className="sticky top-[50px] h-screen overflow-hidden">
+          <div className=" sticky top-[50px] h-[600vh] ">
+            <div className="sticky top-[30px] h-screen overflow-hidden">
               <motion.div
                 style={{ x: horizontalScroll, y: verticalScroll }}
                 className="flex gap-8 absolute h-full items-center"
               >
                 {/* Feature Cards */}
-                <motion.div className="x w-screen h-screen flex items-center justify-center p-8">
-                  <div className="glassmorphic p-12 rounded-3xl max-w-4xl w-full transform hover:scale-105 transition-all duration-300">
+                <motion.div className="w-screen h-[80vh] flex items-center justify-center p-8">
+                  <div className="glassmorphic min-w-[70vw] min-h-full p-12 rounded-3xl max-w-4xl w-full transform transition-all duration-300">
                     <h2 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
                       Track Your Progress
                     </h2>
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden">
-                      <img
-                        src="/progress.png"
-                        alt="Progress"
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#083344] to-transparent opacity-50" />
+                    <p className="text-lg text-gray-100 mb-8">
+                      Monitor your daily activities and progress towards your
+                      fitness goals. Get insights into your performance and
+                      adjust your routine accordingly.
+                    </p>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Monitor your daily activities and progress towards
+                          your fitness goals.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Get personalized recommendations for improvement.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Stay motivated with rewards and achievements.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
 
-                <motion.div className="x w-screen h-screen flex items-center justify-center p-8">
-                  <div className="glassmorphic p-12 rounded-3xl max-w-4xl w-full transform hover:scale-105 transition-all duration-300">
+                <motion.div className="w-screen h-[80vh] flex items-center justify-center p-8">
+                  <div className="glassmorphic min-w-[70vw] min-h-full p-12 rounded-3xl max-w-4xl w-full transform transition-all duration-300">
                     <h2 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
                       Join Challenges
                     </h2>
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden">
-                      <img
-                        src="/challenges.png"
-                        alt="Challenges"
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#083344] to-transparent opacity-50" />
+                    <p className="text-lg text-gray-100 mb-8">
+                      Participate in fitness challenges to push yourself beyond
+                      limits. Engage with a community of like-minded individuals
+                      to stay motivated.
+                    </p>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Participate in fitness challenges to push yourself
+                          beyond limits.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Compete with others to stay motivated and engaged.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Win rewards and recognition for your achievements.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
 
-                <motion.div className="x w-screen h-screen flex items-center justify-center p-8">
-                  <div className="glassmorphic p-12 rounded-3xl max-w-4xl w-full transform hover:scale-105 transition-all duration-300">
-                    <h2 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">
-                      Earn Rewards
+                <motion.div className="w-screen h-[80vh] flex items-center justify-center p-8">
+                  <div className="glassmorphic min-w-[70vw] min-h-full p-12 rounded-3xl max-w-4xl w-full transform transition-all duration-300">
+                    <h2 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-yellow-500">
+                      Nutrition Guide
                     </h2>
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden">
-                      <img
-                        src="/rewards.png"
-                        alt="Rewards"
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#083344] to-transparent opacity-50" />
+                    <p className="text-lg text-gray-100 mb-8">
+                      Get access to a comprehensive nutrition guide to help you
+                      achieve your fitness goals. Learn about the best foods to
+                      eat and when to eat them.
+                    </p>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Access a comprehensive nutrition guide to help you
+                          achieve your fitness goals.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Learn about the best foods to eat and when to eat
+                          them.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Get personalized nutrition recommendations.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div className="w-screen h-[80vh] flex items-center justify-center p-8">
+                  <div className="glassmorphic min-w-[70vw] min-h-full p-12 rounded-3xl max-w-4xl w-full transform transition-all duration-300">
+                    <h2 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-pink-500">
+                      Personal Trainer
+                    </h2>
+                    <p className="text-lg text-gray-100 mb-8">
+                      Get access to a personal trainer who will guide you
+                      through your fitness journey. They will create a
+                      personalized workout plan and provide support and
+                      motivation.
+                    </p>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Get access to a personal trainer who will guide you
+                          through your fitness journey.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          They will create a personalized workout plan for you.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          They will provide support and motivation.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div className="w-screen h-[80vh] flex items-center justify-center p-8">
+                  <div className="glassmorphic min-w-[70vw] min-h-full p-12 rounded-3xl max-w-4xl w-full transform transition-all duration-300">
+                    <h2 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-500">
+                      Yoga Classes
+                    </h2>
+                    <p className="text-lg text-gray-100 mb-8">
+                      Join our yoga classes to improve your flexibility,
+                      strength, and mental well-being. Our experienced
+                      instructors will guide you through various poses and
+                      breathing techniques.
+                    </p>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Join our yoga classes to improve your flexibility,
+                          strength, and mental well-being.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Our experienced instructors will guide you through
+                          various poses and breathing techniques.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Improve your overall well-being with yoga.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div className="w-screen h-[80vh] flex items-center justify-center p-8">
+                  <div className="glassmorphic min-w-[70vw] min-h-full p-12 rounded-3xl max-w-4xl w-full transform transition-all duration-300">
+                    <h2 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-500">
+                      Meditation Sessions
+                    </h2>
+                    <p className="text-lg text-gray-100 mb-8">
+                      Join our meditation sessions to reduce stress, improve
+                      focus, and enhance your overall well-being. Our
+                      experienced instructors will guide you through various
+                      techniques.
+                    </p>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Join our meditation sessions to reduce stress, improve
+                          focus, and enhance your overall well-being.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Our experienced instructors will guide you through
+                          various techniques.
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4"
+                          />
+                        </svg>
+                        <p className="text-gray-200">
+                          Reduce stress and improve your overall well-being with
+                          meditation.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -469,18 +866,18 @@ const Home: FC = () => {
                   <motion.div
                     key={i}
                     className="relative group"
-                    whileHover={{ scale: 1.05 }}
+                    //   whileHover={{ scale: 1.05 }}
                     initial={{ y: 50, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.2 }}
                   >
                     <div className="relative aspect-square rounded-xl overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/30 to-cyan-500/30 group-hover:opacity-70 transition-opacity" />
+                   
                       <img
-                        src={`/nft-${i}.jpg`}
+                        src={`/NFT${i}.png`}
                         alt={`NFT ${i}`}
-                        className="object-cover w-full h-full"
+                        className="object-cover w-full h-full group-hover:scale-105"
                       />
                     </div>
                   </motion.div>
@@ -617,7 +1014,7 @@ const Home: FC = () => {
                           <span className="text-gray-300">{item.label}</span>
                           <span className="text-gray-300">{item.value}</span>
                         </div>
-                        <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                           <motion.div
                             className="h-full bg-gradient-to-r from-yellow-400 to-orange-500"
                             initial={{ width: "0%" }}
@@ -697,19 +1094,25 @@ const Home: FC = () => {
                 Our Partners
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="glassmorphic rounded-2xl p-6 flex items-center justify-center"
-                    initial={{ y: 50, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500" />
-                  </motion.div>
-                ))}
+                {["trustwallet", "metamask", "googlefit", "coinbase"].map(
+                  (i, index) => (
+                    <motion.div
+                      key={i}
+                      className="glassmorphic rounded-2xl p-6 flex items-center justify-center"
+                      initial={{ y: 50, opacity: 0 }}
+                      whileInView={{ y: 0, opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
+                      //   whileHover={{ scale: 1.05 }}
+                    >
+                      <img
+                        src={`/${i}.svg`}
+                        alt={`${i}`}
+                        className="h-16 w-16 rounded-full"
+                      />
+                    </motion.div>
+                  )
+                )}
               </div>
             </div>
           </motion.section>
