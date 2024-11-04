@@ -3,7 +3,7 @@ import React from "react";
 
 const loading = () => {
   return (
-    <div className="mx-auto  h-screen flex flex-col gap-2 justify-center items-center">
+    <div className="mx-auto  max-h-screen flex flex-col gap-2 justify-center items-center">
       <Loader />
     </div>
   );
