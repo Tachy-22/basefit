@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { connectWallet } from "./actions/user";
 import { setWallet } from "src/lib/redux/walletSlice";
 import { useDispatch } from "react-redux";
 import { useRouter, usePathname } from "next/navigation";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "src/lib/firebase";
+import { checkWaitlist, connectWallet } from "src/actions/user";
 
 interface WalletConnectionProviderProps {
   children: React.ReactNode;
@@ -21,22 +21,14 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
 
-  const checkWaitlist = async (walletAddress: string) => {
-    const q = query(
-      collection(db, "Waitlist"),
-      where("Wallet", "==", walletAddress)
-    );
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
-  };
-
   useEffect(() => {
     const checkUserAndSetWallet = async () => {
       if (address && isConnected) {
+        document.cookie = "wallet-connection=TRUE; path=/;";
         try {
           // Check if wallet is on waitlist
           const isOnWaitlist = await checkWaitlist(address);
-          
+          console.log({ isOnWaitlist });
           if (!isOnWaitlist) {
             router.push("/waitlist");
             setIsLoading(false);
@@ -46,25 +38,19 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
           // Fetch user data from Firebase
           const userData = await connectWallet(address);
           console.log("userData from firebase : ", userData);
+          //push to dashboard
+       //   router.push(`/user/${userData.id}/dashboard`);
           // Update Redux store with wallet data
           dispatch(setWallet(userData as unknown as TWalletData));
-
         } catch (error) {
           console.error("Error connecting wallet:", error);
           // Handle the error appropriately - maybe show a notification to the user
         } finally {
           setIsLoading(false);
         }
-      } else if (pathname !== "/" && pathname !== "/waitlist") {
-        // Check if there's an auth code in the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const authCode = urlParams.get('code');
-        
-        // Only redirect if there's no auth code
-        if (!authCode) {
-          router.push("/");
-        }
       } else {
+        router.push(`/`);
+        document.cookie = "wallet-connection=FALSE; path=/;";
         // If on homepage or waitlist, allow loading without connection
         setIsLoading(false);
       }
@@ -78,9 +64,7 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
   }
 
   // Render children if connected or on homepage or waitlist
-  return isConnected || pathname === "/" || pathname === "/waitlist" ? (
-    <>{children}</>
-  ) : null;
+  return <>{children}</>;
 };
 
 export default WalletConnectionProvider;

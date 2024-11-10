@@ -31,7 +31,9 @@ import Dashboard from "./Dashboard";
 const Profile: FC = () => {
   const { address } = useAccount();
   const [newGoal, setNewGoal] = useState("");
-  const [goals, setGoals] = useState<{ goal: string; completed: boolean }[]>([]);
+  const [goals, setGoals] = useState<{ goal: string; completed: boolean }[]>(
+    []
+  );
   const [points, setPoints] = useState(0);
   const [achievementLevel, setAchievementLevel] = useState(1);
   const [loginStreak, setLoginStreak] = useState(0);
@@ -226,22 +228,35 @@ const Profile: FC = () => {
 
             {/* Achievements Accordion */}
             <div className="col-span-full bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-white flex items-center justify-between cursor-pointer" onClick={() => setShowAchievements(!showAchievements)}>
+              <h3
+                className="text-2xl font-bold mb-4 text-white flex items-center justify-between cursor-pointer"
+                onClick={() => setShowAchievements(!showAchievements)}
+              >
                 Achievements
-                <FaAngleDown className={`transition-transform ${showAchievements ? "rotate-180" : ""}`} />
+                <FaAngleDown
+                  className={`transition-transform ${showAchievements ? "rotate-180" : ""}`}
+                />
               </h3>
               {showAchievements && (
                 <div className="mt-4">
                   <div className="rounded-lg shadow-lg p-4 bg-gray-700">
-                    <h4 className="text-xl font-bold text-white">Marathon Finisher</h4>
+                    <h4 className="text-xl font-bold text-white">
+                      Marathon Finisher
+                    </h4>
                     <p className="text-gray-400">Completed a full marathon</p>
                   </div>
                   <div className="rounded-lg shadow-lg p-4 bg-gray-700 mt-2">
-                    <h4 className="text-xl font-bold text-white">10,000 Steps Streak</h4>
-                    <p className="text-gray-400">Walked 10,000 steps for 30 days straight</p>
+                    <h4 className="text-xl font-bold text-white">
+                      10,000 Steps Streak
+                    </h4>
+                    <p className="text-gray-400">
+                      Walked 10,000 steps for 30 days straight
+                    </p>
                   </div>
                   <div className="rounded-lg shadow-lg p-4 bg-gray-700 mt-2">
-                    <h4 className="text-xl font-bold text-white">Weight Loss Champion</h4>
+                    <h4 className="text-xl font-bold text-white">
+                      Weight Loss Champion
+                    </h4>
                     <p className="text-gray-400">Lost 20 pounds in 3 months</p>
                   </div>
                 </div>
@@ -335,7 +350,7 @@ const Profile: FC = () => {
   };
 
   return (
-    <div className="min-h-screen text-white bg-gray-900 flex relative">
+    <div className=" h-[calc(100vh-65px)] max-h-[calc(100vh-65px)] text-white bg-gray-900 flex relative">
       {/* Collapsible Sidebar */}
       <motion.div
         initial={{ width: isSidebarOpen ? "16rem" : "4rem" }}
@@ -402,7 +417,9 @@ const Profile: FC = () => {
       </motion.div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto">{renderContent()}</div>
+      <div className="flex-1 overflow-y-auto s n scrollbar-hide h-full">
+        {renderContent()}
+      </div>
     </div>
   );
 };

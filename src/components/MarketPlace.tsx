@@ -473,13 +473,13 @@ const Marketplace: FC = () => {
         <meta property="og:image" content="/og-image.jpg" />
         <link rel="canonical" href="https://yourwebsite.com/marketplace" />
       </Head>
-      <div className="min-h-screen bg-gray-900 text-white">
+      <div className="min-h-screen min-w-full w-full">
         {/* Marketplace Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-gradient-to-r from-gray-900 to-gray-800 py-16 text-center relative shadow-lg"
+          className=" py-16 text-center relative shadow-lg"
         >
           <h1 className="text-5xl font-extrabold mb-4 text-white">
             Marketplace

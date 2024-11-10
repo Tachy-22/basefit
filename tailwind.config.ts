@@ -11,8 +11,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#0097a7",
+        foreground: "#eafffc",
         teal: {
           "50": "#eafffc",
           "100": "#cafffa",

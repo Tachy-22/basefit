@@ -1,8 +1,6 @@
 "use server";
 import {
   collection,
-  getDoc,
-  doc,
   query,
   where,
   getDocs,
@@ -11,6 +9,7 @@ import {
 import { db } from "src/lib/firebase";
 
 interface User {
+  [x: string]: any;
   walletAddress: string;
   name?: string;
   tokenBalance: number;
@@ -28,7 +27,7 @@ function validateWalletAddress(walletAddress: string): boolean {
 function validateUser(userData: User): boolean {
   if (!validateWalletAddress(userData.walletAddress)) return false;
   if (userData.tokenBalance < 0) return false;
-  if (typeof userData.fitnessTrackerConnected !== 'boolean') return false;
+  if (typeof userData.fitnessTrackerConnected !== "boolean") return false;
   if (!(userData.createdAt instanceof Date)) return false;
   if (!(userData.updatedAt instanceof Date)) return false;
   return true;
@@ -53,7 +52,7 @@ export async function getUserByWalletAddress(walletAddress: string) {
         id: doc.id,
         ...userData,
         createdAt: userData.createdAt.toDate(),
-        updatedAt: userData.updatedAt.toDate()
+        updatedAt: userData.updatedAt.toDate(),
       } as unknown as User;
 
       if (!validateUser(user)) {
@@ -131,3 +130,12 @@ export async function connectWallet(walletAddress: string) {
     throw e;
   }
 }
+
+export const checkWaitlist = async (walletAddress: string) => {
+  const q = query(
+    collection(db, "Waitlist"),
+    where("Wallet", "==", walletAddress)
+  );
+  const querySnapshot = await getDocs(q);
+  return !querySnapshot.empty;
+};
