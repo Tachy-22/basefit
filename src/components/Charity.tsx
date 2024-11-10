@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const Charity: FC = () => {
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900">
+    <div className="min-h-full  text-gray-900">
       {/* Charity Header */}
       <motion.div
         initial={{ opacity: 0 }}

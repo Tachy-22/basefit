@@ -73,7 +73,7 @@ const AppNavbar = () => {
                     transition={{ duration: 2, ease: "easeInOut" }}
                   />
                   <motion.path
-                    fill="none" 
+                    fill="none"
                     stroke="url(#logoGradient)"
                     strokeWidth="2"
                     strokeLinecap="round"
@@ -84,7 +84,7 @@ const AppNavbar = () => {
                   />
                   <motion.path
                     fill="none"
-                    stroke="url(#logoGradient)" 
+                    stroke="url(#logoGradient)"
                     strokeWidth="2"
                     strokeLinecap="round"
                     d="M12 12l6 6M18 12l-6 6"
@@ -93,7 +93,13 @@ const AppNavbar = () => {
                     transition={{ duration: 2, delay: 2, ease: "easeInOut" }}
                   />
                   <defs>
-                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <linearGradient
+                      id="logoGradient"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="0%"
+                    >
                       <stop offset="0%" style={{ stopColor: "#67e8f9" }} />
                       <stop offset="50%" style={{ stopColor: "#a855f7" }} />
                       <stop offset="100%" style={{ stopColor: "#ec4899" }} />
@@ -106,15 +112,12 @@ const AppNavbar = () => {
               </div>
             </Link>
           </div>
-          <div className="hidden lg:block">
+          {/* <div className="hidden lg:block">
             <div className="ml-10 flex items-baseline gap-4">
-              <NavLink href="/dashboard">Dashboard</NavLink>
-              <NavLink href="/challenges">Challenges</NavLink>
-              <NavLink href="/marketplace">Marketplace</NavLink>
-              {/* <NavLink href="/charity">Charity</NavLink> */}
               <NavLink href="/waitlist">Waitlist</NavLink>
             </div>
-          </div>
+          </div> */}
+
           <div className="hidden lg:block">
             {address ? (
               <div className="flex gap-1 items-center">
@@ -183,12 +186,12 @@ const AppNavbar = () => {
             className="lg:hidden md"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-800">
-              <NavLink href="/dashboard">Dashboard</NavLink>
+              {/*    <NavLink href="/dashboard">Dashboard</NavLink>
               <NavLink href="/challenges">Challenges</NavLink>
               <NavLink href="/marketplace">Marketplace</NavLink>
               <NavLink href="/waitlist">Waitlist</NavLink>
 
-              {/* <NavLink href="/charity">Charity</NavLink>               <NavLink href="/user">Dashboard</NavLink>
+              <NavLink href="/charity">Charity</NavLink>               <NavLink href="/user">Dashboard</NavLink>
                */}
               {address ? (
                 <div className="mt-6  mx-auto w-full">

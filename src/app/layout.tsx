@@ -4,18 +4,12 @@ import type { Metadata } from "next";
 import "./global.css";
 import "@coinbase/onchainkit/styles.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import dynamic from "next/dynamic";
-import AppNavbar from "src/components/Navbar";
-import NextProviders from "./NextProviders";
-import StoreProvider from "./ReduxProvider";
-import WalletConnectionProvider from "./WalletConnectionProvider";
+import NextProviders from "../providers/NextProviders";
+import StoreProvider from "../providers/ReduxProvider";
+import WalletConnectionProvider from "../providers/WalletConnectionProvider";
+import OnchainProviders from "../providers/OnchainProviders";
 
-const OnchainProviders = dynamic(
-  () => import("src/components/OnchainProviders"),
-  {
-    ssr: false,
-  }
-);
+
 
 export const viewport = {
   width: "device-width",
@@ -45,11 +39,7 @@ export default function RootLayout({
           <NextProviders>
             {" "}
             <OnchainProviders>
-              <WalletConnectionProvider>
-                {" "}
-                <AppNavbar />
-                {children}
-              </WalletConnectionProvider>
+              <WalletConnectionProvider> {children}</WalletConnectionProvider>
             </OnchainProviders>
           </NextProviders>
         </StoreProvider>
