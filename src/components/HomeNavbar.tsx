@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import { useAccount } from "wagmi";
 import UserMenuDropdown from "./UserMenuDropdown";
 
-const AppNavbar = () => {
+const HomeNavbar = () => {
   const { address, isConnected } = useAccount();
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -112,17 +112,12 @@ const AppNavbar = () => {
               </div>
             </Link>
           </div>
-          {/* <div className="hidden lg:block">
-            <div className="ml-10 flex items-baseline gap-4">
-              <NavLink href="/waitlist">Waitlist</NavLink>
-            </div>
-          </div> */}
+    
 
           <div className="hidden lg:block">
             {address ? (
               <div className="flex gap-1 items-center">
                 {" "}
-                <UserMenuDropdown />
                 <UserAvatar />
               </div>
             ) : (
@@ -186,13 +181,6 @@ const AppNavbar = () => {
             className="lg:hidden md"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-800">
-              {/*    <NavLink href="/dashboard">Dashboard</NavLink>
-              <NavLink href="/challenges">Challenges</NavLink>
-              <NavLink href="/marketplace">Marketplace</NavLink>
-              <NavLink href="/waitlist">Waitlist</NavLink>
-
-              <NavLink href="/charity">Charity</NavLink>               <NavLink href="/user">Dashboard</NavLink>
-               */}
               {address ? (
                 <div className="mt-6  mx-auto w-full">
                   <UserAvatar />
@@ -211,4 +199,4 @@ const AppNavbar = () => {
   );
 };
 
-export default AppNavbar;
+export default HomeNavbar;

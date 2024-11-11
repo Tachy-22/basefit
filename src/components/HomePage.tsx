@@ -13,7 +13,7 @@ import { Button } from "@nextui-org/react";
 import WalletWrapper from "./WalletWrapper";
 import { useAccount } from "wagmi";
 
-const Home: FC = () => {
+const HomePage: FC = () => {
   const { address, isConnected } = useAccount();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -42,7 +42,7 @@ const Home: FC = () => {
     <>
       <div
         ref={containerRef}
-        className="h-full relative overflow-hid scrollbar-hide bg-[#083344]"
+        className="h-full relative overflow-y-auto scrollbar-hide bg-[#083344]"
       >
         {/* Intense Web3 Animated Background */}
         <div className="fixed inset-0 overflow-hidden perspective-1000">
@@ -63,71 +63,6 @@ const Home: FC = () => {
             />
           </div>
 
-          {/* Intense light rays with color shifts 
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/40 via-transparent to-purple-500/40 animate-[pulse_3s_ease-in-out_infinite]" />
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute h-screen w-48 bg-gradient-to-b from-cyan-500/20 via-white/30 to-purple-500/20"
-                style={{
-                  left: `${i * 15}%`,
-                  transform: `rotate(${30 + i * 15}deg)`,
-                }}
-                animate={{
-                  opacity: [0.2, 0.6, 0.2],
-                  x: [-200, 200, -200],
-                  filter: ['hue-rotate(0deg)', 'hue-rotate(360deg)'],
-                }}
-                transition={{
-                  duration: 5 + i,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-              />
-            ))}
-          </div>
-*/}
-          {/* Energetic nodes network 
-          <div className="absolute inset-0">
-            {[...Array(30)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-              >
-                <div className="h-4 w-4 rounded-full bg-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.8)] animate-[pulse_1.5s_ease-in-out_infinite]" />
-                <div className="absolute top-1/2 left-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cyan-400/50 animate-[ping_1.5s_ease-out_infinite]" />
-              </motion.div>
-            ))}
-          </div> */}
-
-          {/* Dynamic matrix rain effect 
-          <div className="absolute inset-0 opacity-30">
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute top-0 text-cyan-500 text-xl font-matrix tracking-widest"
-                style={{ left: `${i * 5}%` }}
-                animate={{
-                  y: [-100, window.innerHeight],
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                }}
-              >
-                {[...Array(20)]
-                  .map(() => String.fromCharCode(0x30a0 + Math.random() * 96))
-                  .join("\n")}
-              </motion.div>
-            ))}
-          </div>*/}
 
           {/* Aggressive 3D Transform on Scroll */}
           <motion.div
@@ -141,56 +76,10 @@ const Home: FC = () => {
             <div className="w-full h-full bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-blue-500/20 animate-[pulse_4s_ease-in-out_infinite]" />
           </motion.div>
 
-          {/* Enhanced Web3 Symbols
-          <div className="absolute inset-0">
-            {["₿", "Ξ", "◈", "∞", "⬡", "⟠", "∰", "⨊"].map((symbol, i) => (
-              <motion.div
-                key={i}
-                className="absolute text-5xl font-bold"
-                style={{
-                  left: `${10 + i * 12}%`,
-                  top: `${20 + i * 8}%`,
-                  textShadow: "0 0 25px rgba(34,211,238,0.8)",
-                  color: "rgba(34,211,238,0.5)",
-                }}
-                animate={{
-                  y: [-50, 50, -50],
-                  rotateY: [0, 720],
-                  scale: [1, 1.5, 1],
-                  opacity: [0.3, 1, 0.3],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  delay: i * 0.8,
-                }}
-              >
-                {symbol}
-              </motion.div>
-            ))}
-          </div>
- */}
           {/* High contrast overlay with vignette */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.8)_100%)]" />
 
-          {/* Enhanced holographic effect
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/10 to-purple-500/10"
-            style={{
-              backgroundSize: "400% 400%",
-              filter: "url(#enhanced-holographic)",
-            }}
-            animate={{
-              backgroundPosition: ["0% 0%", "200% 200%"],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />  */}
-
-          {/* Enhanced SVG Filters */}
+        
           <svg className="hidden">
             <defs>
               <filter id="enhanced-holographic">
@@ -364,7 +253,7 @@ const Home: FC = () => {
                       color="warning"
                       className="min-w-[200px] h-14 text-lg rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg shadow-purple-500/30"
                       as="a"
-                      href="/dashboard"
+                      href="#"
                     >
                       Launch App
                       <motion.svg
@@ -1304,4 +1193,4 @@ const Home: FC = () => {
   );
 };
 
-export default Home;
+export default HomePage;

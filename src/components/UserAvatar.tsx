@@ -34,31 +34,31 @@ export default function UserAvatar() {
 
   return (
     <div className="flex lg:justify-end pl-3 lg:pl-0 w-full">
-      <Wallet className=" !text-white">
-        <ConnectWallet className=" !bg-stone-500  !text-white  flex flex-col  items-end justify-end gap-3">
-          <Avatar className="h-6 w-6 !bg-stone-500 !text-white accent-white" />
-          <Name className="bg-stone-500 !text-white" />
+      <Wallet className=" !text">
+        <ConnectWallet className=" !bg-transparen  !text  flex flex-col  items-end justify-end gap-3">
+          <Avatar className="h-6 w-6 !bg-transparen !text- accent-white" />
+          <Name className="bg-transparen !text" />
           {/* <EthBalance className="" /> */}
         </ConnectWallet>
-        <WalletDropdown className="bg-stone-500 !text-white">
+        <WalletDropdown className="bg-transparen !text">
           <Identity
-            className="px-4 pt-3 pb-2 w-full bg-stone-500 !text-white"
+            className="px-4 pt-3 pb-2 w-full bg-transparen !text"
             hasCopyAddressOnClick
           >
-            <Avatar className="bg-stone-500 !text-white" />
-            <Name className="bg-stone-500 !text-white" />
+            <Avatar className="bg-transparen !text" />
+            <Name className="bg-transparen !text" />
             <Address
-              className="bg-stone-500 !text-white"
+              className="bg-transparen !text"
               // className={color.foregroundMuted}
             />
-            <EthBalance className="bg-stone-500 !text-white" />
+            <EthBalance className="bg-transparen !text" />
           </Identity>
           <WalletDropdownBasename
-            className="bg-stone-500 !text-white"
+            className="bg-transparen !text"
             //  text="#ffffff "
           />
           <WalletDropdownDisconnect
-            className="bg-stone-500 !text-white"
+            className="bg-transparen !text"
             //  text="#ffffff "
           />
         </WalletDropdown>

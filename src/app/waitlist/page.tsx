@@ -1,12 +1,8 @@
 import React from "react";
-import WaitlistForm from "src/components/BasefitDB";
+import WaitlistForm from "src/components/WaitlistForm";
 
 const page = () => {
-    return (
-        <div>
-            <WaitlistForm />
-        </div>
-    );
+    return <WaitlistForm />;
 };
 
 export default page;
