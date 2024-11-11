@@ -51,31 +51,32 @@ const HistoricalFitnessCharts = ({ data }: Props) => {
   return (
     <div className="w-full h-[15rem] lg:h-[25rem]">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <h3 className="font-bold text-xl sm:text-2xl text-white capitalize">
+        <h3 className="font-bold text-xl w-full sm:text-2xl text-white capitalize">
           Weekly {activeDataSet}
         </h3>
-
-        <Select
-          label="Select metric"
-          selectedKeys={[activeDataSet]}
-          className="max-w-[200px] border-white"
-          onChange={(e) => setActiveDataSet(e.target.value)}
-          variant="bordered"
-          size="sm"
-          labelPlacement="outside"
-          classNames={{
-            innerWrapper: "",
-            label: "!text-stone-300",
-            value: "!text-white",
-            popoverContent: "bg-stone-900 text-white hover:text-white",
-          }}
-        >
-          {datasets.map((dataset) => (
-            <SelectItem key={dataset.value} value={dataset.value}>
-              {dataset.label}
-            </SelectItem>
-          ))}
-        </Select>
+        <div className="w-full ">
+          {" "}
+          <Select
+            label="Select metric"
+            selectedKeys={[activeDataSet]}
+            onChange={(e) => setActiveDataSet(e.target.value)}
+            variant="bordered"
+            size="sm"
+            labelPlacement="outside"
+            classNames={{
+              innerWrapper: "",
+              label: "!text-stone-300",
+              value: "!text-white",
+              popoverContent: "bg-stone-900 text-white hover:text-white",
+            }}
+          >
+            {datasets.map((dataset) => (
+              <SelectItem key={dataset.value} value={dataset.value}>
+                {dataset.label}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
       </div>
 
       {data.length === 0 ? (

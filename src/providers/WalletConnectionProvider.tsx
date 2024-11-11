@@ -21,42 +21,48 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
   const router = useRouter();
   const pathname = usePathname();
 
+  console.log({ address, isConnected, isReconnecting });
+
   useEffect(() => {
     const checkUserAndSetWallet = async () => {
       try {
         const isInternetConnection = await testNetworkConnection();
 
-        // Check if wallet is connected and internet connection is available
-        if (address && isConnected && isInternetConnection && !isReconnecting) {
-          document.cookie = "wallet-connection=TRUE; path=/;";
+        if (!isReconnecting) {
+          if (address && isConnected && isInternetConnection) {
+            document.cookie = "wallet-connection=TRUE; path=/;";
 
-          // Check if the wallet address is on the waitlist
-          const isOnWaitlist = await checkWaitlist(address);
-          if (!isOnWaitlist) {
-            toast.info("Your wallet is not on the waitlist. Redirecting...");
-            router.push("/waitlist");
-            return;
-          }
+            const isOnWaitlist = await checkWaitlist(address);
+            if (!isOnWaitlist) {
+              toast.info("Your wallet is not on the waitlist. Redirecting...");
+              router.push("/waitlist");
+              return;
+            }
 
-          // If on the waitlist, proceed to connect the wallet
-          const userData = await connectWallet(address);
-          toast.success("Wallet connected successfully!");
-          toast.success("Redirecting to Dashboard...");
+            const userData = await connectWallet(address);
+            const dashboardPath = `/user/${userData.id}/dashboard`;
 
-          router.push(`/user/${userData.id}/dashboard`);
-          dispatch(setWallet(userData as unknown as TWalletData));
-        } else {
-          // Handle scenario when wallet is not connected or internet is unavailable
-          document.cookie = "wallet-connection=FALSE; path=/;";
-          router.push(`/`);
-          toast.warn("Wallet is not connected. Redirecting to homepage.");
+            // Only show toasts and redirect if the current path is not the dashboard
+            if (pathname !== dashboardPath) {
+              toast.success("Wallet connected successfully!");
+              toast.success("Redirecting to Dashboard...");
+              router.push(dashboardPath);
+            }
 
-          if (!isInternetConnection) {
-            toast.warn("Please check your internet connection.");
+            dispatch(setWallet(userData as unknown as TWalletData));
+          } else {
+            document.cookie = "wallet-connection=FALSE; path=/;";
+            if (pathname !== "/") {
+              router.push(`/`);
+              toast.warn("Wallet is not connected. Redirecting to homepage.");
+            }
+
+            if (!isInternetConnection) {
+              toast.warn("Please check your internet connection.");
+            }
           }
         }
       } catch (error) {
-        // Catch any error during the network or wallet connection process
         console.error("Error connecting wallet:", error);
         toast.error("Failed to connect wallet. Please try again.");
       }
