@@ -1,12 +1,8 @@
 "use server";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-} from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import { redirect } from "next/navigation";
 import { db } from "src/lib/firebase";
+import { testNetworkConnection } from "./networkTest";
 
 interface User {
   [x: string]: any;
@@ -132,10 +128,18 @@ export async function connectWallet(walletAddress: string) {
 }
 
 export const checkWaitlist = async (walletAddress: string) => {
-  const q = query(
-    collection(db, "Waitlist"),
-    where("Wallet", "==", walletAddress)
-  );
-  const querySnapshot = await getDocs(q);
-  return !querySnapshot.empty;
+  try {
+    const q = query(
+      collection(db, "Waitlist"),
+      where("Wallet", "==", walletAddress)
+    );
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      throw new Error("Wallet address not found in the waitlist");
+    }
+    return true;
+  } catch (e) {
+    console.error("Error checking waitlist: ", e);
+    throw e;
+  }
 };

@@ -73,7 +73,8 @@ const Dashboard = () => {
         <div className="flex flex-col gap-8 justify-bewteen h-full mb-[9rem]">
           {/* KPI's */}
           <div className="grid grid-cols-3 w-full gap-6">
-            <div className=" p-6 rounded-lg bg-stone-700 ">
+            <div className="p-6 rounded-lg bg-gradient-to-br from-stone-900 via-stone-700 to-stone-900 shadow-lg">
+              {" "}
               <h3 className="text-2xl font-semibold mb-4  text-white">
                 Points Balance
               </h3>
@@ -88,7 +89,7 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <div className=" p-6 rounded-lg bg-stone-700 ">
+            <div className="p-6 rounded-lg bg-gradient-to-br from-stone-900 via-stone-700 to-stone-900 shadow-lg">
               <h3 className="text-2xl font-semibold mb-4  text-white">
                 Achievement Level
               </h3>
@@ -105,7 +106,7 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <div className=" p-6 rounded-lg bg-stone-700 ">
+            <div className="p-6 rounded-lg bg-gradient-to-br from-stone-900 via-stone-700 to-stone-900 shadow-lg">
               <h3 className="text-2xl font-semibold mb-4  text-white">
                 Login Streak
               </h3>
@@ -123,12 +124,12 @@ const Dashboard = () => {
           </div>
 
           <section className="grid lg:grid-cols-5 gap-6 h-full">
-            <div className="lg:col-span-3 w-full min-h-full bg-stone-700 p-6 rounded-lg">
+            <div className="lg:col-span-3 w-full min-h-full bg-gradient-to-br from-stone-900 via-stone-700 to-stone-900 shadow-lg p-6 rounded-lg">
               <HistoricalFitnessCharts data={fitnessData.historicalData} />
             </div>
 
             {/* Statistics Grid Section */}
-            <div className="bg-stone-700 lg:col-span-2 p-6 rounded-lg  w-full mb-6 h-full">
+            <div className="bg-gradient-to-br from-stone-900 via-stone-700 to-stone-900 shadow-lg lg:col-span-2 p-6 rounded-lg  w-full mb-6 h-full">
               <h3 className="font-bold text-xl text-white  mb-4">
                 Today's Stats
               </h3>

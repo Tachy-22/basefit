@@ -8,8 +8,7 @@ import NextProviders from "../providers/NextProviders";
 import StoreProvider from "../providers/ReduxProvider";
 import WalletConnectionProvider from "../providers/WalletConnectionProvider";
 import OnchainProviders from "../providers/OnchainProviders";
-
-
+import { testNetworkConnection } from "src/actions/networkTest";
 
 export const viewport = {
   width: "device-width",
@@ -26,14 +25,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
   return (
-    <html lang="en">
-      <body className="flex items-center justify-center scrollbar-hide bg-cyan-950 overflow-y-auto hide bar max-h-screen">
+    <html
+      lang="en"
+      className="scrollbar-hide bg-red-400 h-screen max-h-screen overflow-y-hidden"
+    >
+      <body className="flex items-center justify-center  bg-cyan-950 overflow-y-auto min-h-full scrollbar-hide">
         <StoreProvider>
           {" "}
           <NextProviders>
