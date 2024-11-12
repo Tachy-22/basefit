@@ -32,11 +32,8 @@ export default async function RootLayout({
 }) {
 
   return (
-    <html
-      lang="en"
-      className="scrollbar-hide bg-red-400 h-screen max-h-screen overflow-y-hidden"
-    >
-      <body className="flex items-center justify-center  bg-cyan-950 overflow-y-auto min-h-full scrollbar-hide">
+    <html lang="en" className=" bg-cyan-950">
+      <body className="flex items-center justify-center scrollbar-hide bg-cyan-950 overflow-y-auto hide bar max-h-screen w-screen">
         <StoreProvider>
           {" "}
           <NextProviders>

@@ -36,7 +36,7 @@ const HomeNavbar = () => {
     return (
       <Link
         href={href}
-        className={`block w-full  hover:bg-gray-700 hover:text-white px-3 py-2 lg:rounded-md text-sm font-medium ${
+        className={`block w-full  hover:bg-gray-700 hover:text-white px-3 py-4 lg:rounded-md text-sm font-medium ${
           isActive
             ? "!text-coral-400 lg:border-b-4 lg:border-l-0 border-coral-500 lg:!text-coral-200"
             : "text-white"
@@ -122,7 +122,6 @@ const HomeNavbar = () => {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <SignupButton />
                 <LoginButton />
               </div>
             )}
@@ -187,8 +186,7 @@ const HomeNavbar = () => {
                 </div>
               ) : (
                 <div className="flex flex-col gap-2 mt-4 w-full pl-3 lg:pl-0">
-                  <SignupButton />
-                  <LoginButton />
+                    <LoginButton />
                 </div>
               )}
             </div>

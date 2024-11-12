@@ -42,7 +42,7 @@ const HomePage: FC = () => {
     <>
       <div
         ref={containerRef}
-        className="h-full relative overflow-y-auto scrollbar-hide bg-[#083344]"
+        className="h-full w-full relative scrollbar-hide bg-[#083344]"
       >
         {/* Intense Web3 Animated Background */}
         <div className="fixed inset-0 overflow-hidden perspective-1000">
@@ -63,7 +63,6 @@ const HomePage: FC = () => {
             />
           </div>
 
-
           {/* Aggressive 3D Transform on Scroll */}
           <motion.div
             className="absolute inset-0"
@@ -79,7 +78,6 @@ const HomePage: FC = () => {
           {/* High contrast overlay with vignette */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.8)_100%)]" />
 
-        
           <svg className="hidden">
             <defs>
               <filter id="enhanced-holographic">
@@ -284,11 +282,11 @@ const HomePage: FC = () => {
           </motion.section>
 
           {/* Horizontal Scroll Section */}
-          <div className=" sticky top-[50px] h-[600vh] ">
-            <div className="sticky top-[30px] h-screen overflow-hidden">
+          <div className=" sticky top-[50px] h-[500vh] ">
+            <div className="sticky top-[50px] h-screen overflow-hidden">
               <motion.div
                 style={{ x: horizontalScroll, y: verticalScroll }}
-                className="flex gap-8 absolute h-full items-center"
+                className="flex gap-8 absolute h-full items-center "
               >
                 {/* Feature Cards */}
                 <motion.div className="w-screen h-[80vh] flex items-center justify-center p-8">
@@ -762,7 +760,6 @@ const HomePage: FC = () => {
                     transition={{ delay: i * 0.2 }}
                   >
                     <div className="relative aspect-square rounded-xl overflow-hidden">
-                   
                       <img
                         src={`/NFT${i}.png`}
                         alt={`NFT ${i}`}
@@ -844,6 +841,15 @@ const HomePage: FC = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[
+                  { title: "30-Day Marathon", reward: "1000 BFT" },
+                  { title: "Weight Loss Challenge", reward: "2000 BFT" },
+                  { title: "Strength Training", reward: "1500 BFT" },
+                  { title: "30-Day Marathon", reward: "1000 BFT" },
+                  { title: "Weight Loss Challenge", reward: "2000 BFT" },
+                  { title: "Strength Training", reward: "1500 BFT" },
+                  { title: "30-Day Marathon", reward: "1000 BFT" },
+                  { title: "Weight Loss Challenge", reward: "2000 BFT" },
+                  { title: "Strength Training", reward: "1500 BFT" },
                   { title: "30-Day Marathon", reward: "1000 BFT" },
                   { title: "Weight Loss Challenge", reward: "2000 BFT" },
                   { title: "Strength Training", reward: "1500 BFT" },
@@ -1064,7 +1070,7 @@ const HomePage: FC = () => {
                   Subscribe to our newsletter for the latest updates and
                   exclusive offers
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <input
                     type="email"
                     placeholder="Enter your email"
