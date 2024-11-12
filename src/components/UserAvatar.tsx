@@ -35,11 +35,11 @@ export default function UserAvatar() {
   return (
     <div className="flex lg:justify-end pl-3 lg:pl-0 w-full">
       <Wallet className="">
-        {/* <ConnectWallet className=" !   flex flex-col  items-end justify-end gap-3">
+        <ConnectWallet className=" !   flex flex-col  items-end justify-end gap-3">
           <Avatar className="h-6 w-6 !bg-transparen !text- accent-white" />
           <Name className="bg-transparen !text" />
-          {/* <EthBalance className="" />
-        </ConnectWallet> */}
+          {/* <EthBalance className="" /> */}
+        </ConnectWallet>
         <WalletDropdown className=" !text">
           <Identity
             className="px-4 pt-3 pb-2 w-full  !text"
