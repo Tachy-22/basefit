@@ -225,12 +225,12 @@ export default function MyChallengesTable() {
             Join New Challenge
           </Button>
         </div>
-        <div className="w-full  from-stone-900 via-stone-700 to-stone-900 bg-gradient-to-br p-6 rounded-lg overflow-x-auto">
+        <div className="w-full  bg-gradient-to-br from-[#2f274e] via-gray-700 to-[#2f274e] p-6 rounded-lg overflow-x-auto">
           <Table
             isCompact
             aria-label="my challenges table with custom cells"
             isHeaderSticky
-            className="w-full ! from-stone-900 via-stone-700 to-stone-900 bg-gradient-to-br !p-0 "
+            className="w-full ! bg-gradient-to-br from-[#2f274e] via-gray-700 to-[#2f274e] !p-0 "
             removeWrapper
             classNames={{
               base: "base-  ", // table wrapper

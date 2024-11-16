@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const useFetchFitnessData = () => {
   // State declarations for various fitness and wallet metrics
-  const [steps, setSteps] = useState<number>(0);
-  const [distance, setDistance] = useState<number>(0);
-  const [bfPoints, setBfPoints] = useState<number>(0);
-  const [dailyGoal, setDailyGoal] = useState<number>(4000);
-  const [todayPoints, setTodayPoints] = useState<number>(0);
-  const [caloriesBurned, setCaloriesBurned] = useState<number>(0);
-  const [heartRate, setHeartRate] = useState<number>(0);
-  const [weight, setWeight] = useState<number>(0);
-  const [progress, setProgress] = useState<number>(0);
+  const [data, setData] = useState<
+    { type: string; value: null | number }[] | null
+  >(null);
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [errors, setErrors] = useState<string[]>([]);
@@ -22,23 +18,14 @@ const useFetchFitnessData = () => {
   const [historicalData, setHistoricalData] = useState<any[]>([]);
 
   const fitnessData = {
-    steps,
-    distance,
-    bfPoints,
-    todayPoints,
-    caloriesBurned,
-    heartRate,
-    weight,
-    progress,
     userInfo,
     errors,
-    accessToken,
     lastUpdateTime,
     historicalData,
   };
   // Check if user is already authenticated
   const checkAuthStatus = () => {
-    const savedToken = localStorage.getItem("googleAccessToken");
+    const savedToken = Cookies.get("googleAccessToken");
     console.log("Checking saved token:", savedToken);
     if (savedToken) {
       setAccessToken(savedToken);
@@ -50,8 +37,8 @@ const useFetchFitnessData = () => {
 
   // Handle sign out
   const handleSignOut = () => {
-    localStorage.removeItem("googleAccessToken");
-    localStorage.removeItem("userInfo");
+    Cookies.remove("googleAccessToken");
+    Cookies.remove("userInfo");
     setAccessToken(null);
     setIsAuthenticated(false);
     setUserInfo(null);
@@ -86,10 +73,11 @@ const useFetchFitnessData = () => {
           if (tokenResponse.access_token) {
             console.log("New token received:", tokenResponse);
             setAccessToken(tokenResponse.access_token);
-            localStorage.setItem(
-              "googleAccessToken",
-              tokenResponse.access_token
-            );
+            Cookies.set("googleAccessToken", tokenResponse.access_token, {
+              expires: 1, // 1 day expiration
+              secure: true,
+              sameSite: "strict",
+            });
             setIsAuthenticated(true);
 
             // Initialize Google API client
@@ -122,7 +110,11 @@ const useFetchFitnessData = () => {
               const userInfoData = await userInfoResponse.json();
               console.log("User Info:", userInfoData);
               setUserInfo(userInfoData);
-              localStorage.setItem("userInfo", JSON.stringify(userInfoData));
+              Cookies.set("userInfo", JSON.stringify(userInfoData), {
+                expires: 1, // 1 day expiration
+                secure: true,
+                sameSite: "strict",
+              });
             } catch (error) {
               console.error("Error fetching user info:", error);
               setErrors((prev) => [...prev, "Failed to fetch user info"]);
@@ -146,18 +138,73 @@ const useFetchFitnessData = () => {
   // Function to subscribe to Google Fit data changes
   const subscribeToFitnessUpdates = async () => {
     try {
+      // Step 1: Get all available data sources
       const response = await (
         window as any
-      ).gapi.client.fitness.users.dataSources.subscribe({
+      ).gapi.client.fitness.users.dataSources.list({
         userId: "me",
-        dataSourceId:
-          "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
-        subscription: {
-          dataTypeName: "com.google.step_count.delta",
-        },
       });
 
-      console.log("Subscription successful:", response);
+      const dataSources = response.result.dataSource;
+      if (!dataSources || dataSources.length === 0) {
+        console.error("No data sources found.");
+        setErrors((prev) => [...prev, "No data sources found"]);
+        return;
+      }
+
+      //  console.log("Available data sources:", dataSources);
+
+      // Step 2: Subscribe to each data source
+      for (const dataSource of dataSources) {
+        try {
+          const dataSourceId = dataSource.dataStreamId;
+          console.log({ dataSourceId });
+          const listDataSources = async () => {
+            try {
+              const response = await (
+                window as any
+              ).gapi.client.fitness.users.dataSources.list({
+                userId: "me",
+              });
+              console.log("Data Sources:", response.result.dataSource);
+            } catch (error) {
+              console.error("Error listing data sources:", error);
+            }
+          };
+          await listDataSources();
+
+          const getDataset = async () => {
+            try {
+              const datasetId = `${Date.now() - 7 * 24 * 60 * 60 * 1000}-${Date.now()}`; // 7 days of data
+              const response = await (
+                window as any
+              ).gapi.client.fitness.users.dataSources.datasets.get({
+                userId: "me",
+                dataSourceId,
+                datasetId,
+              });
+              console.log(
+                "Dataset Data:",
+                dataSource.dataType.name,
+                response.result.point
+              );
+            } catch (error) {
+              console.error("Error fetching dataset:", error);
+            }
+          };
+
+          await getDataset();
+        } catch (subscriptionError) {
+          console.error(
+            `Failed to subscribe to ${dataSource.dataType.name}:`,
+            subscriptionError
+          );
+          setErrors((prev) => [
+            ...prev,
+            `Failed to subscribe to ${dataSource.dataType.name}`,
+          ]);
+        }
+      }
     } catch (error) {
       console.error("Error subscribing to updates:", error);
       setErrors((prev) => [...prev, "Failed to subscribe to fitness updates"]);
@@ -165,130 +212,103 @@ const useFetchFitnessData = () => {
   };
 
   // Modified fetchFitnessData to check for recent changes
-  const fetchFitnessData = async (force: boolean = false) => {
-    try {
-      const now = Date.now();
-      // Only fetch if forced or if more than polling interval has passed
-      if (!force && now - lastUpdateTime < POLLING_INTERVAL) {
-        return;
-      }
+  const fetchFitnessData = useCallback(
+    async (force: boolean = false) => {
+      try {
+        const now = Date.now();
 
-      // Check if fitness API is loaded
-      if (!(window as any).gapi.client.fitness) {
-        await (window as any).gapi.client.load("fitness", "v1");
-      }
-
-      console.log("Fetching fitness data...");
-      const today = new Date();
-      const startTime = new Date(today.setHours(0, 0, 0, 0)).getTime();
-      const endTime = now;
-
-      // Fetch steps data
-      const stepsResponse = await (
-        window as any
-      ).gapi.client.fitness.users.dataset.aggregate({
-        userId: "me",
-        aggregateBy: [
-          {
-            dataTypeName: "com.google.step_count.delta",
-          },
-        ],
-        bucketByTime: { durationMillis: 86400000 },
-        startTimeMillis: startTime,
-        endTimeMillis: endTime,
-      });
-
-      // Process steps data
-      const stepsData = JSON.parse(stepsResponse.body);
-      if (stepsData.bucket[0]?.dataset[0]?.point?.length > 0) {
-        const stepsCount =
-          stepsData.bucket[0].dataset[0].point[0].value[0].intVal || 0;
-        if (stepsCount !== steps) {
-          // Only update if steps count has changed
-          setSteps(stepsCount);
-          setBfPoints(Math.floor(stepsCount / 100));
-          setTodayPoints(Math.floor(stepsCount / 10));
-          setDistance(stepsCount * 0.0008);
-          setCaloriesBurned(Math.floor(stepsCount * 0.05));
-          setProgress((stepsCount / dailyGoal) * 100);
+        // Only fetch if forced or if more than polling interval has passed
+        if (!force && now - lastUpdateTime < POLLING_INTERVAL) {
+          return;
         }
-      }
 
-      // Fetch heart rate data
-      const heartRateResponse = await (
-        window as any
-      ).gapi.client.fitness.users.dataset.aggregate({
-        userId: "me",
-        aggregateBy: [
-          {
-            dataTypeName: "com.google.heart_rate.bpm",
-            dataSourceId:
-              "raw:com.google.heart_rate.bpm:com.google.android.apps.fitness:user_input",
-          },
-        ],
-        bucketByTime: { durationMillis: 86400000 },
-        startTimeMillis: startTime - 7 * 24 * 60 * 60 * 1000, // Look back 7 days
-        endTimeMillis: endTime,
-      });
+        // Check if fitness API is loaded
+        if (!(window as any).gapi.client.fitness) {
+          await (window as any).gapi.client.load("fitness", "v1");
+        }
 
-      // Process heart rate data
-      const heartRateData = JSON.parse(heartRateResponse.body);
+        console.log("Fetching fitness data...");
+        const today = new Date();
+        const startTime = new Date(today.setHours(0, 0, 0, 0)).getTime();
+        const endTime = now;
 
-      let heartRateValue = 0;
+        const allData: any[] = []; // Array to store all fetched datasets
 
-      // Check all buckets for heart rate data
-      for (const bucket of heartRateData.bucket) {
-        if (bucket.dataset[0]?.point?.length > 0) {
-          // Get the most recent heart rate reading
-          const points = bucket.dataset[0].point;
-          const latestPoint = points[points.length - 1];
-          if (latestPoint?.value[0]?.fpVal) {
-            heartRateValue = Math.round(latestPoint.value[0].fpVal);
-            break;
+        // Step 2: Get all available data sources
+        const response = await (
+          window as any
+        ).gapi.client.fitness.users.dataSources.list({
+          userId: "me",
+        });
+
+        const dataSources = response.result.dataSource || [];
+        if (dataSources.length === 0) {
+          console.error("No data sources found.");
+          setErrors((prev) => [...prev, "No data sources found"]);
+          return;
+        }
+
+        // Step 3: Fetch dataset from each data source
+        for (const dataSource of dataSources) {
+          const dataSourceId = dataSource.dataStreamId;
+          const dataTypeName = dataSource.dataType.name;
+          try {
+            const datasetId = `${startTime}-${endTime}`;
+            const datasetResponse = await (
+              window as any
+            ).gapi.client.fitness.users.dataset.aggregate({
+              userId: "me",
+              aggregateBy: [{ dataTypeName: dataTypeName }],
+              bucketByTime: { durationMillis: 86400000 },
+              startTimeMillis: startTime,
+              endTimeMillis: endTime,
+            });
+
+            const datasetData = JSON.parse(datasetResponse.body);
+            const objData = {
+              data: datasetData,
+            };
+
+            const processedData = () => {
+              let value = null;
+              // Traverse the data structure to extract the numerical value
+              objData.data.bucket.forEach((bucket: any) => {
+                bucket.dataset.forEach((dataset: any) => {
+                  dataset.point.forEach((point: any) => {
+                    if (point.value) {
+                      point.value.forEach((val: any) => {
+                        // Check for numeric values like `fpVal` or `intVal`
+                        if (val.fpVal !== undefined) value = val.fpVal;
+                        if (val.intVal !== undefined) value = val.intVal;
+                      });
+                    }
+                  });
+                });
+              });
+
+              return { type: dataTypeName.replace("com.google.", ""), value };
+            };
+
+            allData.push(processedData());
+          } catch (error) {
+            console.error(`Error fetching dataset for ${dataTypeName}:`, error);
+            setErrors((prev) => [
+              ...prev,
+              `Error fetching data for ${dataSourceId}`,
+            ]);
           }
         }
+
+        console.log("All Fetched Data:", allData);
+        setData(allData);
+        setLastUpdateTime(now);
+      } catch (error) {
+        console.error("Error fetching fitness data:", error);
+        setErrors((prev) => [...prev, "Failed to fetch fitness data"]);
       }
-
-      if (heartRateValue !== heartRate && heartRateValue > 0) {
-        console.log("Setting new heart rate:", heartRateValue);
-        setHeartRate(heartRateValue);
-      } else {
-        console.log("No valid heart rate found or no change in value");
-      }
-
-      // Fetch weight data
-      const weightResponse = await (
-        window as any
-      ).gapi.client.fitness.users.dataset.aggregate({
-        userId: "me",
-        aggregateBy: [
-          {
-            dataTypeName: "com.google.weight",
-          },
-        ],
-        bucketByTime: { durationMillis: 86400000 },
-        startTimeMillis: startTime,
-        endTimeMillis: endTime,
-      });
-
-      // Process weight data
-      const weightData = JSON.parse(weightResponse.body);
-      if (weightData.bucket[0]?.dataset[0]?.point?.length > 0) {
-        const weightValue =
-          Math.round(weightData.bucket[0].dataset[0].point[0].value[0].fpVal) ||
-          0;
-        if (weightValue !== weight) {
-          // Only update if weight has changed
-          setWeight(weightValue);
-        }
-      }
-
-      setLastUpdateTime(now);
-    } catch (error) {
-      console.error("Error fetching fitness data:", error);
-      setErrors((prev) => [...prev, "Failed to fetch fitness data"]);
-    }
-  };
+    },
+    [lastUpdateTime, POLLING_INTERVAL]
+  );
 
   // Function to fetch historical fitness data
   const fetchHistoricalData = async () => {
@@ -378,6 +398,7 @@ const useFetchFitnessData = () => {
   // Add toast notifications for key actions
   const handleManualRefresh = async () => {
     await fetchFitnessData(true);
+    await fetchHistoricalData().then((data) => setHistoricalData(data));
   };
 
   // Effect hook to set up subscription and polling
@@ -460,7 +481,9 @@ const useFetchFitnessData = () => {
   }, []);
 
   return {
-    fitnessData,
+    data,
+    userInfo,
+    historicalData,
     handleSignOut,
     initializeGoogleFit,
     handleManualRefresh,

@@ -6,7 +6,6 @@ import {
   Identity,
   EthBalance,
 } from "@coinbase/onchainkit/identity";
-import { color } from "@coinbase/onchainkit/theme";
 import {
   ConnectWallet,
   Wallet,
@@ -14,21 +13,21 @@ import {
   WalletDropdownBasename,
   WalletDropdownDisconnect,
 } from "@coinbase/onchainkit/wallet";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import useFetchFitnessData from "src/hooks/useFetchFitnessData";
 import { useAccount } from "wagmi";
 
 export default function UserAvatar() {
   const { isConnected } = useAccount();
-  const router = useRouter();
+  const { handleSignOut } = useFetchFitnessData();
 
   useEffect(() => {
     if (!isConnected) {
       console.log("Wallet disconnected");
-     // seting cookies for middleware
+      // seting cookies for middleware
       document.cookie = "wallet-connection=FALSE; path=/;";
+      handleSignOut();
       //
-     // router.push(`/`);
     }
   }, [isConnected]);
 
