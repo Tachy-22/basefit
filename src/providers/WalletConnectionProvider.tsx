@@ -42,8 +42,8 @@ const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> = ({
             const userData = await connectWallet(address);
             const dashboardPath = `/user/${userData?.id}/dashboard`;
 
-            // Only show toasts and redirect if the current path is not the dashboard
-            if (pathname?.split("/")[0] !== "user") {
+            // Only show toasts and redirect if the current path is not the dashboardbut its logged in
+            if (pathname === "/") {
               toast.success("Wallet connected successfully!");
               toast.success("Redirecting to Dashboard...");
               router.push(dashboardPath);

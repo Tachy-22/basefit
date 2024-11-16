@@ -8,7 +8,6 @@ import NextProviders from "../providers/NextProviders";
 import StoreProvider from "../providers/ReduxProvider";
 import WalletConnectionProvider from "../providers/WalletConnectionProvider";
 import OnchainProviders from "../providers/OnchainProviders";
-import { testNetworkConnection } from "src/actions/networkTest";
 
 export const viewport = {
   width: "device-width",

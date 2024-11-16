@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { http, WagmiProvider, createConfig } from 'wagmi';
 import { base } from 'wagmi/chains';
 import { mock } from 'wagmi/connectors';
-import WalletWrapper from './WalletWrapper';
+import WalletWrapper from '../components/WalletWrapper';
 
 const config = createConfig({
   chains: [base],

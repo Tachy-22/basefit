@@ -12,7 +12,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import SidebarNavItem from "./SidebarNavItem";
 
-import { BsArrowsCollapseVertical } from "react-icons/bs";
 import { RiExpandLeftLine, RiExpandRightLine } from "react-icons/ri";
 
 const Sidebar = () => {
@@ -46,12 +45,12 @@ const Sidebar = () => {
 
   return (
     <motion.aside
-      className={`h-screen max-h-screen max-w-[25rem] min-w-[4rem] w-full  bg-stone-700 text-white relative `}
+      className={`h-screen max-h-screen max-w-[19rem]  w-full  bg-[#2f274e] text-white relative `}
       variants={sidebarVariants}
-      animate={isExpanded ? "expanded" : "collapsed"}
+      animate={isExpanded ? "expanded min-w-[15rem]" : "collapsed"}
     >
-      <div className=" overflow- h-full">
-        <div className="w-full  flex flex-col justify-between bg-stone-700 gap-3 z-20 ">
+      <div className=" overflow-hidden h-full">
+        <div className="w-full  flex flex-col justify-between bg-[#2f274e] gap-3 z-20 ">
           {" "}
           <div className="text-black text-start py-5 px-3 border-white">
             <div
@@ -147,8 +146,12 @@ const Sidebar = () => {
               Accounts
             </span>{" "}
             <div className=" w-full gap-1 flex flex-col">
-              {account.map((item) => (
-                <SidebarNavItem item={item} isExpanded={isExpanded} />
+              {account.map((item, index) => (
+                <SidebarNavItem
+                  item={item}
+                  key={index}
+                  isExpanded={isExpanded}
+                />
               ))}
             </div>
           </div>
